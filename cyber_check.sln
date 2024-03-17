@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32922.545
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cyber_check", "cyber_check\cyber_check.vcxproj", "{225BBF90-E559-4998-B377-00CC9D2910BE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{225BBF90-E559-4998-B377-00CC9D2910BE}.Debug|x64.ActiveCfg = Debug|x64
+		{225BBF90-E559-4998-B377-00CC9D2910BE}.Debug|x64.Build.0 = Debug|x64
+		{225BBF90-E559-4998-B377-00CC9D2910BE}.Debug|x86.ActiveCfg = Debug|Win32
+		{225BBF90-E559-4998-B377-00CC9D2910BE}.Debug|x86.Build.0 = Debug|Win32
+		{225BBF90-E559-4998-B377-00CC9D2910BE}.Release|x64.ActiveCfg = Release|x64
+		{225BBF90-E559-4998-B377-00CC9D2910BE}.Release|x64.Build.0 = Release|x64
+		{225BBF90-E559-4998-B377-00CC9D2910BE}.Release|x86.ActiveCfg = Release|Win32
+		{225BBF90-E559-4998-B377-00CC9D2910BE}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {96797AED-8BE9-4B53-857B-953C042ADE44}
+	EndGlobalSection
+EndGlobal
