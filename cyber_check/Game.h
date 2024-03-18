@@ -10,6 +10,7 @@ public:
     sf::Font font;
     Game(sf::VideoMode vm, const sf::String& title, std::string font_path);
     ~Game();
+    bool mouse_in_board_bounds();
     void run();
     void render();
     void update();

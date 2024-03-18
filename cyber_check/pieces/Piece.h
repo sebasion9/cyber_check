@@ -5,21 +5,27 @@
 class Piece {
 	sf::Sprite* _sprite;
 	sf::Texture* _texture;
-	vec2u _field_pos;
-	vec2u _actual_pos;
-	bool _is_moving;
+	vec2f _field_pos;
+	vec2f _actual_pos;
 	void _load_texture(const std::string &texture_path);
-	vec2u _calculate_actual_pos(uint32_t field_size, const vec2u& pos);
-	sf::IntRect _calculate_intrect(uint32_t field_size, const vec2u& act_pos);
+	vec2f _calculate_actual_pos(uint32_t field_size, const vec2f& pos);
+	vec2f _find_field_pos_from_actual_center(uint32_t field_size, const std::vector<vec2f> &fields);
+	bool _is_in_field_bounds_center(vec2f field, uint32_t field_size);
+	sf::IntRect _calculate_intrect(uint32_t field_size, const vec2f& act_pos);
 	sf::Sprite* _create_sprite(const sf::IntRect& int_rect, sf::Color color);
 public:
-	void set_act_pos(uint32_t x, uint32_t y);
-	void set_field_pos(uint32_t x, uint32_t y);
+	vec2f get_field_pos();
+	vec2f get_actual_pos();
+	void set_act_pos_mouse(float x, float y);
+	void set_act_pos(float x, float y);
+	void set_field_pos(float x, float y);
 	Piece(
 		const std::string &texture_path,
-		const vec2u &pos, 
+		const vec2f&pos,
 		uint32_t field_size, 
 		sf::Color color);
+
+	void update(uint32_t field_size, const std::vector<vec2f> &fields);
 	void draw(sf::RenderWindow &window);
 };
 

@@ -8,6 +8,8 @@ enum class State {
 
 #define vec2u sf::Vector2u
 
+#define vec2f sf::Vector2f
+
 #define BLACK sf::Color(51, 44, 80)
 
 #define WHITE sf::Color(70, 135, 143)

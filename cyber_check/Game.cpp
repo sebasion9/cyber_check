@@ -13,11 +13,23 @@ Game::~Game() {
     delete _window;
 }
 
+bool Game::mouse_in_board_bounds() {
+    sf::Vector2i mouse_pos = sf::Mouse::getPosition();
+    if (_board.fields.size() < 64) {
+        return false;
+    }
+    if (mouse_pos.x > _board.fields[0].x && (mouse_pos.x < _board.fields[7].x + _board.field_size)
+        && mouse_pos.y > _board.fields[0].y && (mouse_pos.y < _board.fields[63].y + _board.field_size)) {
+        return true;
+    }
+    return false;
+}
+
 void Game::run() {
     if (!_window) return;
     sf::Clock clock;
-    float last_time = 0;
-
+    bool is_holding = false;
+    bool is_smth_selected = false;
     // test piece 
     _board.pieces.push_back(new Piece("assets/rook.png", _board.fields[0], _board.field_size, WHITE_PIECE));
     _board.pieces.push_back(new Piece("assets/bishop.png", _board.fields[1], _board.field_size, WHITE_PIECE));
@@ -33,13 +45,28 @@ void Game::run() {
                 break;
             case sf::Event::KeyPressed:
                 if (event.key.scancode == sf::Keyboard::Scan::Space) {
-                    vec2u field = _board.get_field_by_ccords('a', 3);
+                    vec2f field = _board.get_field_by_ccords('a', 3);
                 }
                 break;
             case sf::Event::MouseMoved:
-                if (true) {
-                    vec2u field = _board.get_field_by_mouse_cords(event.mouseMove.x, event.mouseMove.y);
-                    _board.set_selected(field);
+                if (mouse_in_board_bounds()) {
+                    vec2f field = _board.get_field_by_mouse_cords(event.mouseMove.x, event.mouseMove.y);
+                    _board.set_hovered(field);
+                }
+                break;
+            case sf::Event::MouseButtonPressed:
+                if (mouse_in_board_bounds()) {
+                    is_holding = true;
+                    if (!is_smth_selected) {
+                        _board.set_selected(_board.get_hovered());
+                        is_smth_selected = true;
+                    }
+                }
+                break;
+            case sf::Event::MouseButtonReleased:
+                if (is_holding) {
+                    is_holding = false;
+                    is_smth_selected = false;
                 }
                 break;
             default:
@@ -47,12 +74,28 @@ void Game::run() {
             }
 
         }
+        vec2f selected_field = _board.get_selected();
+        Piece* selected_piece = _board.get_piece_by_field(selected_field);
+        if (is_holding) {
+            if (selected_piece) {
+                sf::Vector2i mouse_pos = sf::Mouse::getPosition();
+                float mouse_x = (float)mouse_pos.x;
+                float mouse_y = (float)mouse_pos.y;
+                selected_piece->set_act_pos_mouse(mouse_x, mouse_y);
+                update();
+            }
+            
+        }
         float current_time = clock.restart().asSeconds();
         float fps = 1.0f / current_time;
 
-        //update();
+        update();
         render();
     }
+}
+
+void Game::update() {
+    _board.update();
 }
 
 void Game::render() {
@@ -63,3 +106,4 @@ void Game::render() {
     }
     _window->display();
 }
+
