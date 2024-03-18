@@ -1,13 +1,5 @@
 #include "Piece.h"
-
-void Piece::_load_texture(const std::string &texture_path) {
-	sf::Texture* texture = new sf::Texture;
-	if (!texture->loadFromFile(texture_path)) {
-		std::cerr << "couldn't load texture from file (PIECE), exiting now" << std::endl;
-		exit(1);
-	}
-	this->_texture = texture;
-}
+#include "../AssetLoader.h"
 
 sf::IntRect Piece::_calculate_intrect(uint32_t field_size, const vec2f &act_pos) {
 	uint32_t new_size = field_size * 4 / 5;
@@ -89,11 +81,24 @@ Piece::Piece(
 	_field_pos = pos;
 	_actual_pos = _calculate_actual_pos(field_size, pos);
 	sf::IntRect int_rect = _calculate_intrect(field_size, _actual_pos);
-	_load_texture(texture_path);
+	_texture = AssetLoader::load_texture(texture_path);
 	_sprite = _create_sprite(int_rect, color);
 	_sprite->setPosition(_actual_pos.x, _actual_pos.y);
 }
 
+Piece::Piece(
+	sf::Texture* texture,
+	const vec2f& pos,
+	uint32_t field_size,
+	sf::Color color) {
+
+	_field_pos = pos;
+	_actual_pos = _calculate_actual_pos(field_size, pos);
+	sf::IntRect int_rect = _calculate_intrect(field_size, _actual_pos);
+	_texture = texture;
+	_sprite = _create_sprite(int_rect, color);
+	_sprite->setPosition(_actual_pos.x, _actual_pos.y);
+}
 
 void Piece::update(uint32_t field_size, const std::vector<vec2f> &fields) {
 	if (!sf::Mouse::isButtonPressed(sf::Mouse::Left)) {

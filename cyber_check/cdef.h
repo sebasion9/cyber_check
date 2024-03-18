@@ -17,3 +17,13 @@ enum class State {
 #define WHITE_PIECE sf::Color(200, 200, 200)
 
 #define BLACK_PIECE sf::Color(0, 30, 100)
+
+
+namespace TEXTURES {
+    const auto PAWN = "assets/pawn.png";
+    const auto BISHOP = "assets/bishop.png";
+    const auto KING = "assets/king.png";
+    const auto HORSE = "assets/horse.png";
+    const auto QUEEN = "assets/queen.png";
+    const auto ROOK = "assets/rook.png";
+}

@@ -25,16 +25,54 @@ bool Game::mouse_in_board_bounds() {
     return false;
 }
 
+void Game::load_textures() {
+    _textures = AssetLoader::load_textures();
+}
+
+void Game::push_piece(const std::string &piece_name, uint32_t index, sf::Color color) {
+    _board.pieces.push_back(new Piece(_textures[piece_name], _board.fields[index], _board.field_size, color));
+}
+
+void Game::reset() {
+    for (size_t i = 0 ; i < 8; i++) {
+        push_piece("pawn", i + 8, BLACK_PIECE);
+    }
+    for (size_t i = 0; i < 8; i++) {
+        push_piece("pawn", i + 48, WHITE_PIECE);
+    }
+    push_piece("rook", 0, BLACK_PIECE);
+    push_piece("rook", 7, BLACK_PIECE);
+    push_piece("rook", 56, WHITE_PIECE);
+    push_piece("rook", 63, WHITE_PIECE);
+
+    push_piece("horse", 1, BLACK_PIECE);
+    push_piece("horse", 6, BLACK_PIECE);
+    push_piece("horse", 57, WHITE_PIECE);
+    push_piece("horse", 62, WHITE_PIECE);
+
+    push_piece("bishop", 2, BLACK_PIECE);
+    push_piece("bishop", 5, BLACK_PIECE);
+    push_piece("bishop", 58, WHITE_PIECE);
+    push_piece("bishop", 61, WHITE_PIECE);
+
+    push_piece("queen", 3, BLACK_PIECE);
+    push_piece("queen", 59, WHITE_PIECE);
+
+    push_piece("king", 4, BLACK_PIECE);
+    push_piece("king", 60, WHITE_PIECE);
+
+}
+
 void Game::run() {
     if (!_window) return;
     sf::Clock clock;
     bool is_holding = false;
     bool is_smth_selected = false;
-    // test piece 
-    _board.pieces.push_back(new Piece("assets/rook.png", _board.fields[0], _board.field_size, WHITE_PIECE));
-    _board.pieces.push_back(new Piece("assets/bishop.png", _board.fields[1], _board.field_size, WHITE_PIECE));
-    _board.pieces.push_back(new Piece("assets/rook.png", _board.fields[2], _board.field_size, BLACK_PIECE));
-    _board.pieces.push_back(new Piece("assets/bishop.png", _board.fields[3], _board.field_size, BLACK_PIECE));
+    reset();
+    
+    int frame_count = 0;
+    float frame_time = 0;
+
     while (_window->isOpen()) {
         sf::Event event;
         while (_window->pollEvent(event)) {
@@ -42,11 +80,6 @@ void Game::run() {
 
             case sf::Event::Closed:
                 _window->close();
-                break;
-            case sf::Event::KeyPressed:
-                if (event.key.scancode == sf::Keyboard::Scan::Space) {
-                    vec2f field = _board.get_field_by_ccords('a', 3);
-                }
                 break;
             case sf::Event::MouseMoved:
                 if (mouse_in_board_bounds()) {
@@ -86,8 +119,18 @@ void Game::run() {
             }
             
         }
+        
+
         float current_time = clock.restart().asSeconds();
-        float fps = 1.0f / current_time;
+
+        frame_count++;
+        frame_time += current_time;
+
+        if (frame_time > 0.25f) {
+            _fps = frame_count / frame_time;
+            frame_count = 0;
+            frame_time = 0.0f;
+        }
 
         update();
         render();
@@ -98,8 +141,18 @@ void Game::update() {
     _board.update();
 }
 
+
+
 void Game::render() {
     _window->clear(sf::Color::Black);
+
+    sf::Text text;
+    text.setFont(font);
+    text.setFillColor(BLACK);
+    text.setString(std::to_string(_fps));
+    text.setPosition(10.0f, 10.0f);
+    _window->draw(text);
+
     _board.draw(*_window);
     for (auto piece : _board.pieces) {
         piece->draw(*_window);
