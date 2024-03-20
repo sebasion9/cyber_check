@@ -2,6 +2,7 @@
 #include<SFML/Graphics.hpp>
 #include<unordered_map>
 #include"Board.h"
+#include"pieces/Rook.h"
 #include"AssetLoader.h"
 #include"cdef.h"
 class Game {
@@ -15,10 +16,13 @@ public:
     Game(sf::VideoMode vm, const sf::String &title, std::string font_path);
     ~Game();
     void load_textures();
-    void push_piece(const std::string& piece_name, uint32_t index, sf::Color color);
+    
+    void push_piece(uint32_t x, uint32_t y, sf::Color color, PieceType pt);
     void reset();
+    
     bool mouse_in_board_bounds();
     void run();
+    
     void render();
     void update();
 };

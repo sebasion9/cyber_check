@@ -24,7 +24,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="pieces\Piece.cpp">
+    <ClCompile Include="pieces\PieceView.cpp">
       <Filter>Pliki źródłowe\pieces</Filter>
     </ClCompile>
     <ClCompile Include="Board.cpp">
@@ -36,9 +36,18 @@
     <ClCompile Include="AssetLoader.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="pieces\PieceLogic.cpp">
+      <Filter>Pliki źródłowe\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="pieces\Piece.cpp">
+      <Filter>Pliki źródłowe\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="pieces\Rook.cpp">
+      <Filter>Pliki źródłowe\pieces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pieces\Piece.h">
+    <ClInclude Include="pieces\PieceView.h">
       <Filter>Pliki nagłówkowe\pieces</Filter>
     </ClInclude>
     <ClInclude Include="cdef.h">
@@ -52,6 +61,15 @@
     </ClInclude>
     <ClInclude Include="AssetLoader.h">
       <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="pieces\PieceLogic.h">
+      <Filter>Pliki nagłówkowe\pieces</Filter>
+    </ClInclude>
+    <ClInclude Include="pieces\Piece.h">
+      <Filter>Pliki nagłówkowe\pieces</Filter>
+    </ClInclude>
+    <ClInclude Include="pieces\Rook.h">
+      <Filter>Pliki nagłówkowe\pieces</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

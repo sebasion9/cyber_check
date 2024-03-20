@@ -6,6 +6,16 @@ enum class State {
     GAME
 };
 
+enum class PieceType {
+    ROOK,
+    BISHOP,
+    KING,
+    QUEEN,
+    PAWN,
+    HORSE
+};
+
+
 #define vec2u sf::Vector2u
 
 #define vec2f sf::Vector2f

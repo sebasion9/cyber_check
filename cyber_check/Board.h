@@ -20,6 +20,7 @@ public:
 
 	void set_hovered(vec2f field);
 	void set_selected(vec2f field);
+
 	vec2f get_field_by_ccords(char letter, uint32_t num);
 	vec2f get_field_by_mouse_cords(uint32_t x, uint32_t y);
 

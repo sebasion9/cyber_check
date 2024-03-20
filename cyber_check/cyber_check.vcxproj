@@ -135,6 +135,9 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pieces\Piece.cpp" />
+    <ClCompile Include="pieces\PieceLogic.cpp" />
+    <ClCompile Include="pieces\PieceView.cpp" />
+    <ClCompile Include="pieces\Rook.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetLoader.h" />
@@ -142,6 +145,9 @@
     <ClInclude Include="cdef.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="pieces\Piece.h" />
+    <ClInclude Include="pieces\PieceLogic.h" />
+    <ClInclude Include="pieces\PieceView.h" />
+    <ClInclude Include="pieces\Rook.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

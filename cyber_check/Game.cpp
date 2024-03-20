@@ -1,5 +1,4 @@
 #include"Game.h"
-
 Game::Game(sf::VideoMode vm, const sf::String& title, std::string font_path) {
     if (!font.loadFromFile(font_path)) {
         std::cerr << "couldnt load font, exiting now";
@@ -29,37 +28,51 @@ void Game::load_textures() {
     _textures = AssetLoader::load_textures();
 }
 
-void Game::push_piece(const std::string &piece_name, uint32_t index, sf::Color color) {
-    _board.pieces.push_back(new Piece(_textures[piece_name], _board.fields[index], _board.field_size, color));
+void Game::push_piece(uint32_t x, uint32_t y, sf::Color color, PieceType pt) {
+    switch (pt) {
+    default:
+        Piece* rook_piece = new Rook(
+            _textures["rook"], 
+            _board.fields[y*8 + x], 
+            _board.field_size, 
+            color,
+            vec2u(x, y)
+            );
+
+        _board.pieces.push_back(rook_piece);
+        break;
+    }
+
+    
 }
 
 void Game::reset() {
     for (size_t i = 0 ; i < 8; i++) {
-        push_piece("pawn", i + 8, BLACK_PIECE);
+        push_piece(i, 1, BLACK_PIECE, PieceType::PAWN);
     }
     for (size_t i = 0; i < 8; i++) {
-        push_piece("pawn", i + 48, WHITE_PIECE);
+        push_piece(i, 6, WHITE_PIECE, PieceType::PAWN);
     }
-    push_piece("rook", 0, BLACK_PIECE);
-    push_piece("rook", 7, BLACK_PIECE);
-    push_piece("rook", 56, WHITE_PIECE);
-    push_piece("rook", 63, WHITE_PIECE);
+    push_piece(0,0, BLACK_PIECE, PieceType::ROOK);
+    push_piece(7,0, BLACK_PIECE, PieceType::ROOK);
+    push_piece(0, 7, WHITE_PIECE, PieceType::ROOK);
+    push_piece(7, 7, WHITE_PIECE, PieceType::ROOK);
 
-    push_piece("horse", 1, BLACK_PIECE);
-    push_piece("horse", 6, BLACK_PIECE);
-    push_piece("horse", 57, WHITE_PIECE);
-    push_piece("horse", 62, WHITE_PIECE);
+    push_piece(1, 0, BLACK_PIECE, PieceType::HORSE);
+    push_piece(6, 0, BLACK_PIECE, PieceType::HORSE);
+    push_piece(1, 7, WHITE_PIECE, PieceType::HORSE);
+    push_piece(6, 7, WHITE_PIECE, PieceType::HORSE);
 
-    push_piece("bishop", 2, BLACK_PIECE);
-    push_piece("bishop", 5, BLACK_PIECE);
-    push_piece("bishop", 58, WHITE_PIECE);
-    push_piece("bishop", 61, WHITE_PIECE);
+    push_piece(2, 0, BLACK_PIECE, PieceType::BISHOP);
+    push_piece(5, 0, BLACK_PIECE, PieceType::BISHOP);
+    push_piece(2, 7, WHITE_PIECE, PieceType::BISHOP);
+    push_piece(5, 7, WHITE_PIECE, PieceType::BISHOP);
 
-    push_piece("queen", 3, BLACK_PIECE);
-    push_piece("queen", 59, WHITE_PIECE);
+    push_piece(3, 0, BLACK_PIECE, PieceType::QUEEN);
+    push_piece(3, 7, WHITE_PIECE, PieceType::QUEEN);
 
-    push_piece("king", 4, BLACK_PIECE);
-    push_piece("king", 60, WHITE_PIECE);
+    push_piece(4, 0, BLACK_PIECE, PieceType::KING);
+    push_piece(4, 7, WHITE_PIECE, PieceType::KING);
 
 }
 
@@ -115,16 +128,17 @@ void Game::run() {
                 float mouse_x = (float)mouse_pos.x;
                 float mouse_y = (float)mouse_pos.y;
                 selected_piece->set_act_pos_mouse(mouse_x, mouse_y);
-                update();
+
+                selected_piece->find_legal_moves();
             }
             
         }
         
 
-        float current_time = clock.restart().asSeconds();
+        float delta_time = clock.restart().asSeconds();
 
         frame_count++;
-        frame_time += current_time;
+        frame_time += delta_time;
 
         if (frame_time > 0.25f) {
             _fps = frame_count / frame_time;
