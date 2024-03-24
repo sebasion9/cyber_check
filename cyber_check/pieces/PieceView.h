@@ -9,7 +9,8 @@ class PieceView {
 	sf::Texture* _texture;
 	vec2f _field_pos;
 	vec2f _actual_pos;
-	
+
+protected:
 	vec2f _calculate_actual_pos(uint32_t field_size, const vec2f& pos);
 	vec2f _find_field_pos_from_actual_center(uint32_t field_size, const std::vector<vec2f> &fields);
 	bool _is_in_field_bounds_center(vec2f field, uint32_t field_size);
@@ -29,6 +30,8 @@ public:
 	void set_field_pos(float x, float y);
 
 
+
+
 	PieceView(
 		sf::Texture* texture,
 		const vec2f& pos,
@@ -36,7 +39,7 @@ public:
 		sf::Color color
 	);
 	
-	void update(uint32_t field_size, const std::vector<vec2f>& fields);
+
 	void draw(sf::RenderWindow& window);
 
 

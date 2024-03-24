@@ -89,16 +89,6 @@ PieceView::PieceView(
 	set_act_pos(_calculate_actual_pos(field_size, pos));
 }
 
-void PieceView::update(uint32_t field_size, const std::vector<vec2f> &fields) {
-
-	if (!sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-		vec2f field = _find_field_pos_from_actual_center(field_size, fields);
-		this->set_field_pos(field.x, field.y);
-		_actual_pos = _calculate_actual_pos(field_size, _field_pos);
-	}
-	set_act_pos(_actual_pos);
-	
-}
 
 void PieceView::draw(sf::RenderWindow &window) {
 	window.draw(*_sprite);

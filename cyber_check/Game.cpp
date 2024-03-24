@@ -7,6 +7,7 @@ Game::Game(sf::VideoMode vm, const sf::String& title, std::string font_path) {
     _window = new sf::RenderWindow(vm, title, sf::Style::Resize | sf::Style::Fullscreen);
     _board = Board(*_window);
     _state = State::MENU;
+    _should_draw_legal_moves = false;
 }
 Game::~Game() {
     delete _window;
@@ -30,6 +31,47 @@ void Game::load_textures() {
 
 void Game::push_piece(uint32_t x, uint32_t y, sf::Color color, PieceType pt) {
     switch (pt) {
+    case PieceType::ROOK:
+        if (true) {
+            Piece* rook_piece = new Rook(
+                _textures["rook"],
+                _board.fields[y * 8 + x],
+                _board.field_size,
+                color,
+                vec2u(x, y)
+            );
+            rook_piece->set_legal_moves(rook_piece->find_legal_moves());
+            _board.pieces.push_back(std::make_pair(vec2u(x, y), rook_piece));
+        }
+        break;
+        
+    case PieceType::BISHOP:
+        if (true) {
+            Piece* bishop_piece = new Bishop(
+                _textures["bishop"],
+                _board.fields[y * 8 + x],
+                _board.field_size,
+                color,
+                vec2u(x, y)
+            );
+            bishop_piece->set_legal_moves(bishop_piece->find_legal_moves());
+            _board.pieces.push_back(std::make_pair(vec2u(x, y), bishop_piece));
+        }
+        break;
+    case PieceType::HORSE:
+        if (true) {
+            Piece* knight_piece = new Knight(
+                _textures["horse"],
+                _board.fields[y * 8 + x],
+                _board.field_size,
+                color,
+                vec2u(x, y)
+            );
+            knight_piece->set_legal_moves(knight_piece->find_legal_moves());
+            _board.pieces.push_back(std::make_pair(vec2u(x, y), knight_piece));
+        }
+        break;
+        
     default:
         Piece* rook_piece = new Rook(
             _textures["rook"], 
@@ -38,8 +80,8 @@ void Game::push_piece(uint32_t x, uint32_t y, sf::Color color, PieceType pt) {
             color,
             vec2u(x, y)
             );
-
-        _board.pieces.push_back(rook_piece);
+        rook_piece->set_legal_moves(rook_piece->find_legal_moves());
+        _board.pieces.push_back(std::make_pair(vec2u(x,y), rook_piece));
         break;
     }
 
@@ -47,12 +89,14 @@ void Game::push_piece(uint32_t x, uint32_t y, sf::Color color, PieceType pt) {
 }
 
 void Game::reset() {
+
     for (size_t i = 0 ; i < 8; i++) {
         push_piece(i, 1, BLACK_PIECE, PieceType::PAWN);
     }
     for (size_t i = 0; i < 8; i++) {
         push_piece(i, 6, WHITE_PIECE, PieceType::PAWN);
     }
+
     push_piece(0,0, BLACK_PIECE, PieceType::ROOK);
     push_piece(7,0, BLACK_PIECE, PieceType::ROOK);
     push_piece(0, 7, WHITE_PIECE, PieceType::ROOK);
@@ -63,17 +107,16 @@ void Game::reset() {
     push_piece(1, 7, WHITE_PIECE, PieceType::HORSE);
     push_piece(6, 7, WHITE_PIECE, PieceType::HORSE);
 
-    push_piece(2, 0, BLACK_PIECE, PieceType::BISHOP);
-    push_piece(5, 0, BLACK_PIECE, PieceType::BISHOP);
-    push_piece(2, 7, WHITE_PIECE, PieceType::BISHOP);
-    push_piece(5, 7, WHITE_PIECE, PieceType::BISHOP);
-
     push_piece(3, 0, BLACK_PIECE, PieceType::QUEEN);
     push_piece(3, 7, WHITE_PIECE, PieceType::QUEEN);
 
     push_piece(4, 0, BLACK_PIECE, PieceType::KING);
     push_piece(4, 7, WHITE_PIECE, PieceType::KING);
 
+    push_piece(2, 0, BLACK_PIECE, PieceType::BISHOP);
+    push_piece(5, 0, BLACK_PIECE, PieceType::BISHOP);
+    push_piece(2, 7, WHITE_PIECE, PieceType::BISHOP);
+    push_piece(5, 7, WHITE_PIECE, PieceType::BISHOP);
 }
 
 void Game::run() {
@@ -81,6 +124,8 @@ void Game::run() {
     sf::Clock clock;
     bool is_holding = false;
     bool is_smth_selected = false;
+    bool drop = false;
+    bool check_legal_moves = false;
     reset();
     
     int frame_count = 0;
@@ -113,6 +158,7 @@ void Game::run() {
                 if (is_holding) {
                     is_holding = false;
                     is_smth_selected = false;
+                    drop = true;
                 }
                 break;
             default:
@@ -128,19 +174,29 @@ void Game::run() {
                 float mouse_x = (float)mouse_pos.x;
                 float mouse_y = (float)mouse_pos.y;
                 selected_piece->set_act_pos_mouse(mouse_x, mouse_y);
+                vec2u board_index = selected_piece->get_board_index();
+                selected_piece->set_legal_moves(selected_piece->find_legal_moves());
 
-                selected_piece->find_legal_moves();
+                _should_draw_legal_moves = true;
+                std::vector<vec2f> legal_fields;
+                for (auto &legal_move : selected_piece->get_legal_moves()) {
+                    legal_fields.push_back(_board.get_field_by_board_index(legal_move));
+                }
+                _board.set_current_legal_fields(legal_fields);
+            }
+            else {
+                _should_draw_legal_moves = false;
             }
             
         }
-        
+
 
         float delta_time = clock.restart().asSeconds();
 
         frame_count++;
         frame_time += delta_time;
 
-        if (frame_time > 0.25f) {
+        if (frame_time > 0.15f) {
             _fps = frame_count / frame_time;
             frame_count = 0;
             frame_time = 0.0f;
@@ -148,6 +204,8 @@ void Game::run() {
 
         update();
         render();
+
+
     }
 }
 
@@ -168,8 +226,11 @@ void Game::render() {
     _window->draw(text);
 
     _board.draw(*_window);
-    for (auto piece : _board.pieces) {
-        piece->draw(*_window);
+    if (_should_draw_legal_moves) {
+        _board.draw_legal_fields(*_window);
+    }
+    for (auto &piece : _board.pieces) {
+        piece.second->draw(*_window);
     }
     _window->display();
 }

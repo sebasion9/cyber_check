@@ -3,9 +3,12 @@
 #include<unordered_map>
 #include"Board.h"
 #include"pieces/Rook.h"
+#include"pieces/Bishop.h"
+#include"pieces/Knight.h"
 #include"AssetLoader.h"
 #include"cdef.h"
 class Game {
+    bool _should_draw_legal_moves;
     float _fps;
     State _state;
     Board _board;

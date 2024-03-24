@@ -45,6 +45,12 @@
     <ClCompile Include="pieces\Rook.cpp">
       <Filter>Pliki źródłowe\pieces</Filter>
     </ClCompile>
+    <ClCompile Include="pieces\Bishop.cpp">
+      <Filter>Pliki źródłowe\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="pieces\Knight.cpp">
+      <Filter>Pliki źródłowe\pieces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pieces\PieceView.h">
@@ -69,6 +75,12 @@
       <Filter>Pliki nagłówkowe\pieces</Filter>
     </ClInclude>
     <ClInclude Include="pieces\Rook.h">
+      <Filter>Pliki nagłówkowe\pieces</Filter>
+    </ClInclude>
+    <ClInclude Include="pieces\Bishop.h">
+      <Filter>Pliki nagłówkowe\pieces</Filter>
+    </ClInclude>
+    <ClInclude Include="pieces\Knight.h">
       <Filter>Pliki nagłówkowe\pieces</Filter>
     </ClInclude>
   </ItemGroup>

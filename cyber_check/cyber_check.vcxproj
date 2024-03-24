@@ -134,6 +134,8 @@
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="pieces\Bishop.cpp" />
+    <ClCompile Include="pieces\Knight.cpp" />
     <ClCompile Include="pieces\Piece.cpp" />
     <ClCompile Include="pieces\PieceLogic.cpp" />
     <ClCompile Include="pieces\PieceView.cpp" />
@@ -144,6 +146,8 @@
     <ClInclude Include="Board.h" />
     <ClInclude Include="cdef.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="pieces\Bishop.h" />
+    <ClInclude Include="pieces\Knight.h" />
     <ClInclude Include="pieces\Piece.h" />
     <ClInclude Include="pieces\PieceLogic.h" />
     <ClInclude Include="pieces\PieceView.h" />

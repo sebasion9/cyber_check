@@ -38,16 +38,10 @@ void Board::set_selected(vec2f field) {
     _selected_field = field;
 }
 
-
-vec2f Board::get_field_by_ccords(char letter, uint32_t num) {
-    if (letter < 'a' || letter > 'h' || num > 8 || num < 1) {
-        return fields[0];
-    }
-    size_t letter_num = (size_t)letter - 97;
-    size_t cst_num = (size_t)num - 1;
-    return fields[letter_num + cst_num * 8];
-
+void Board::set_current_legal_fields(const std::vector<vec2f>& fields) {
+    _current_legal_fields = fields;
 }
+
 
 vec2f Board::get_field_by_mouse_cords(uint32_t x, uint32_t y) {
     for (auto &field : fields) {
@@ -56,11 +50,16 @@ vec2f Board::get_field_by_mouse_cords(uint32_t x, uint32_t y) {
     return _hovered_field;
 }
 
+vec2f Board::get_field_by_board_index(vec2u board_index) {
+    uint32_t index = board_index.x + board_index.y * 8;
+    return fields[index];
+}
+
 Piece* Board::get_piece_by_field(vec2f field) {
-    for (auto &piece : pieces) {
-        vec2f piece_pos = piece->get_field_pos();
+    for (auto const &piece : pieces) {
+        vec2f piece_pos = piece.second->get_field_pos();
         if (field.x == piece_pos.x && field.y == piece_pos.y) {
-            return piece;
+            return piece.second;
         }
     }
     return nullptr;
@@ -69,14 +68,27 @@ Piece* Board::get_piece_by_field(vec2f field) {
 
 
 void Board::update() {
-    for (auto piece : pieces) {
-        piece->update(field_size, fields);
+    for (auto const &piece : pieces) {
+        if (!sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            piece.second->update(field_size, fields);
+        }
+    }
+}
+
+void Board::draw_legal_fields(sf::RenderWindow& window) {
+    for (size_t i = 0; i < _current_legal_fields.size(); i++) {
+        sf::RectangleShape rect(vec2f(field_size - 5, field_size - 5));
+        sf::Color field_color = sf::Color::Red;
+        field_color.a = 128;
+        rect.setFillColor(field_color);
+        rect.setPosition(_current_legal_fields[i].x, _current_legal_fields[i].y);
+        window.draw(rect);
     }
 }
 
 void Board::draw(sf::RenderWindow& window) {
     for (size_t i = 0; i < fields.size(); i++) {
-        sf::RectangleShape rect(sf::Vector2f(field_size - 5, field_size - 5));
+        sf::RectangleShape rect(vec2f(field_size - 5, field_size - 5));
         sf::Color field_color = (i / 8 + i % 8) % 2 == 0 ? BLACK : WHITE;
         rect.setFillColor(field_color);
 
