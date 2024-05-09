@@ -5,6 +5,8 @@
 #include"pieces/Rook.h"
 #include"pieces/Bishop.h"
 #include"pieces/Knight.h"
+#include"pieces/King.h"
+#include"pieces/Queen.h"
 #include"AssetLoader.h"
 #include"cdef.h"
 class Game {

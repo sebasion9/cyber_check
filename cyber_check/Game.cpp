@@ -71,10 +71,37 @@ void Game::push_piece(uint32_t x, uint32_t y, sf::Color color, PieceType pt) {
             _board.pieces.push_back(std::make_pair(vec2u(x, y), knight_piece));
         }
         break;
-        
+    case PieceType::KING:
+        if (true) {
+            Piece* king_piece = new King(
+                _textures["king"],
+                _board.fields[y * 8 + x],
+                _board.field_size,
+                color,
+                vec2u(x, y)
+            );
+            king_piece->set_legal_moves(king_piece->find_legal_moves());
+            _board.pieces.push_back(std::make_pair(vec2u(x, y), king_piece));
+        }
+        break;
+
+    case PieceType::QUEEN:
+        if (true) {
+            Piece* queen_piece = new Queen(
+                    _textures["queen"],
+                    _board.fields[y * 8 + x],
+                    _board.field_size,
+                    color,
+                    vec2u(x, y)
+                    );
+            queen_piece->set_legal_moves(queen_piece->find_legal_moves());
+            _board.pieces.push_back(std::make_pair(vec2u(x, y), queen_piece));
+        }
+        break;
+
     default:
         Piece* rook_piece = new Rook(
-            _textures["rook"], 
+            _textures["pawn"], 
             _board.fields[y*8 + x], 
             _board.field_size, 
             color,
