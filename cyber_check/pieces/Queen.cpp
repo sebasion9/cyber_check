@@ -12,13 +12,13 @@ std::vector<vec2u> Queen::find_legal_moves() {
 			int y1 = i - x_delta;
 			int y_delta = piece_pos.y - y1;
 			int mirror_y = piece_pos.y + y_delta;
-			if (mirror_y >= 0 && mirror_y < 8) {
+			if (mirror_y >= 0 && mirror_y < 8 && (i != x && mirror_y != y)) {
 				vec.push_back(vec2u(i, mirror_y));
 			}
-			if (y1 >= 0 && y1 < 8) {
+			if (y1 >= 0 && y1 < 8 && (i != x && y1 != y)) {
 				vec.push_back(vec2u(i, y1));
 			}
-			if ((i == x) != (j == y)) {
+			if ((i == x) != (j == y) ) {
 				vec.push_back(vec2u(i, j));
 			}
 			

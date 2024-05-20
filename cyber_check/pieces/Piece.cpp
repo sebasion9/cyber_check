@@ -34,7 +34,7 @@ Piece::Piece(
 		field_size,
 		color) {
 	set_board_index(board_index);
-
+	color == WHITE_PIECE ? set_color(1) : set_color(0);
 };
 
 

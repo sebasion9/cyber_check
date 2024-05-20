@@ -1,10 +1,6 @@
 #pragma once
 #include<SFML/Graphics.hpp>
 
-enum class State {
-    MENU,
-    GAME
-};
 
 enum class PieceType {
     ROOK,

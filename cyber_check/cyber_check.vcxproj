@@ -135,10 +135,13 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pieces\Bishop.cpp" />
+    <ClCompile Include="pieces\King.cpp" />
     <ClCompile Include="pieces\Knight.cpp" />
+    <ClCompile Include="pieces\Pawn.cpp" />
     <ClCompile Include="pieces\Piece.cpp" />
     <ClCompile Include="pieces\PieceLogic.cpp" />
     <ClCompile Include="pieces\PieceView.cpp" />
+    <ClCompile Include="pieces\Queen.cpp" />
     <ClCompile Include="pieces\Rook.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -147,11 +150,28 @@
     <ClInclude Include="cdef.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="pieces\Bishop.h" />
+    <ClInclude Include="pieces\King.h" />
     <ClInclude Include="pieces\Knight.h" />
+    <ClInclude Include="pieces\Pawn.h" />
     <ClInclude Include="pieces\Piece.h" />
     <ClInclude Include="pieces\PieceLogic.h" />
     <ClInclude Include="pieces\PieceView.h" />
+    <ClInclude Include="pieces\Queen.h" />
     <ClInclude Include="pieces\Rook.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="assets\712_serif.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\bishop.png" />
+    <Image Include="assets\horse.png" />
+    <Image Include="assets\king.png" />
+    <Image Include="assets\pawn.png" />
+    <Image Include="assets\queen.png" />
+    <Image Include="assets\rook.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="todo.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

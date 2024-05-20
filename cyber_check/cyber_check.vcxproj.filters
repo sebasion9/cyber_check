@@ -51,6 +51,15 @@
     <ClCompile Include="pieces\Knight.cpp">
       <Filter>Pliki źródłowe\pieces</Filter>
     </ClCompile>
+    <ClCompile Include="pieces\King.cpp">
+      <Filter>Pliki źródłowe\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="pieces\Queen.cpp">
+      <Filter>Pliki źródłowe\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="pieces\Pawn.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pieces\PieceView.h">
@@ -83,5 +92,44 @@
     <ClInclude Include="pieces\Knight.h">
       <Filter>Pliki nagłówkowe\pieces</Filter>
     </ClInclude>
+    <ClInclude Include="pieces\King.h">
+      <Filter>Pliki nagłówkowe\pieces</Filter>
+    </ClInclude>
+    <ClInclude Include="pieces\Queen.h">
+      <Filter>Pliki nagłówkowe\pieces</Filter>
+    </ClInclude>
+    <ClInclude Include="pieces\Pawn.h">
+      <Filter>Pliki nagłówkowe\pieces</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="assets\712_serif.ttf">
+      <Filter>Pliki zasobów</Filter>
+    </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\bishop.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\horse.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\king.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\pawn.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\queen.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\rook.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="todo.md">
+      <Filter>Pliki zasobów</Filter>
+    </None>
   </ItemGroup>
 </Project>

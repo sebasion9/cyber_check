@@ -3,10 +3,13 @@
 #include<vector>
 class PieceLogic {
 	vec2u _board_index;
+	bool _color;
 protected:
 	std::vector<vec2u> _legal_moves;
 	vec2u _calculate_board_index(vec2f field_pos, const std::vector<vec2f>& fields);
 public:
+	bool get_color();
+	void set_color(bool col);
 	vec2u get_board_index();
 	void set_board_index(vec2u pos);
 	void set_board_index(uint32_t x, uint32_t y);

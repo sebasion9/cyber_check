@@ -20,6 +20,13 @@ bool PieceLogic::is_in_legal_moves(vec2u board_index) {
 	}
 	return res;
 }
+bool PieceLogic::get_color() {
+	return _color;
+}
+void PieceLogic::set_color(bool color) {
+	this->_color = color;
+}
+
 
 void PieceLogic::set_legal_moves(const std::vector<vec2u> legal_moves) {
 	_legal_moves = legal_moves;

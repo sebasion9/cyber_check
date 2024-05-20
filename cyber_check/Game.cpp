@@ -6,7 +6,7 @@ Game::Game(sf::VideoMode vm, const sf::String& title, std::string font_path) {
     }
     _window = new sf::RenderWindow(vm, title, sf::Style::Resize | sf::Style::Fullscreen);
     _board = Board(*_window);
-    _state = State::MENU;
+    _state = State();
     _should_draw_legal_moves = false;
 }
 Game::~Game() {
@@ -100,15 +100,15 @@ void Game::push_piece(uint32_t x, uint32_t y, sf::Color color, PieceType pt) {
         break;
 
     default:
-        Piece* rook_piece = new Rook(
+        Piece* pawn_piece = new Pawn(
             _textures["pawn"], 
             _board.fields[y*8 + x], 
             _board.field_size, 
             color,
             vec2u(x, y)
             );
-        rook_piece->set_legal_moves(rook_piece->find_legal_moves());
-        _board.pieces.push_back(std::make_pair(vec2u(x,y), rook_piece));
+        pawn_piece->set_legal_moves(pawn_piece->find_legal_moves());
+        _board.pieces.push_back(std::make_pair(vec2u(x,y), pawn_piece));
         break;
     }
 

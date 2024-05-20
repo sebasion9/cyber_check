@@ -7,7 +7,9 @@
 #include"pieces/Knight.h"
 #include"pieces/King.h"
 #include"pieces/Queen.h"
+#include"pieces/Pawn.h"
 #include"AssetLoader.h"
+#include"state/State.h"
 #include"cdef.h"
 class Game {
     bool _should_draw_legal_moves;
