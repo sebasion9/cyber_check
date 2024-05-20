@@ -9,7 +9,7 @@ Player* State::get_player(bool id) {
 	return _players.second;
 }
 
-bool State::turn() {
+void State::turn() {
 	_turn = !_turn;
 }
 

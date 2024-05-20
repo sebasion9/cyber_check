@@ -143,6 +143,8 @@
     <ClCompile Include="pieces\PieceView.cpp" />
     <ClCompile Include="pieces\Queen.cpp" />
     <ClCompile Include="pieces\Rook.cpp" />
+    <ClCompile Include="state\Player.cpp" />
+    <ClCompile Include="state\State.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetLoader.h" />
@@ -158,6 +160,8 @@
     <ClInclude Include="pieces\PieceView.h" />
     <ClInclude Include="pieces\Queen.h" />
     <ClInclude Include="pieces\Rook.h" />
+    <ClInclude Include="state\Player.h" />
+    <ClInclude Include="state\State.h" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\712_serif.ttf" />

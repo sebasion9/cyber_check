@@ -1,8 +1,10 @@
-## todo
+## pieces
 
 - fix stacking queen legal fields colors
 
 ## state
+- switch turns, count score
+- handle win condition
 
 ## player
 - add piece move invoking by method(to support chess engine)
@@ -10,4 +12,5 @@
 
 ## board
 - differ black and white pieces
-	- maybe divide vector to 2 vectors of white and black
+
+## menu

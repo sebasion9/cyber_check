@@ -19,6 +19,12 @@
     <Filter Include="Pliki źródłowe\pieces">
       <UniqueIdentifier>{7c7cdf31-5bd1-481f-8571-c2ebb3278d7b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pliki nagłówkowe\state">
+      <UniqueIdentifier>{31bcce2e-b0f4-443b-9be4-144bb03ce724}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki źródłowe\state">
+      <UniqueIdentifier>{65852ff9-ae3b-4349-8efa-f352be2f5313}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -58,7 +64,13 @@
       <Filter>Pliki źródłowe\pieces</Filter>
     </ClCompile>
     <ClCompile Include="pieces\Pawn.cpp">
-      <Filter>Pliki źródłowe</Filter>
+      <Filter>Pliki źródłowe\pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="state\Player.cpp">
+      <Filter>Pliki źródłowe\state</Filter>
+    </ClCompile>
+    <ClCompile Include="state\State.cpp">
+      <Filter>Pliki źródłowe\state</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -100,6 +112,12 @@
     </ClInclude>
     <ClInclude Include="pieces\Pawn.h">
       <Filter>Pliki nagłówkowe\pieces</Filter>
+    </ClInclude>
+    <ClInclude Include="state\Player.h">
+      <Filter>Pliki nagłówkowe\state</Filter>
+    </ClInclude>
+    <ClInclude Include="state\State.h">
+      <Filter>Pliki nagłówkowe\state</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

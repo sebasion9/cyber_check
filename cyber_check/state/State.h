@@ -9,7 +9,7 @@ class State {
 public:
 	player_pair get_player();
 	Player* get_player(bool id);
-	bool turn();
+	void turn();
 	bool whosturn();
 
 	State();
