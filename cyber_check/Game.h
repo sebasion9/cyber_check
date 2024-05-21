@@ -14,7 +14,6 @@
 class Game {
     bool _should_draw_legal_moves;
     float _fps;
-    State _state;
     Board _board;
     sf::RenderWindow* _window;
     std::unordered_map<std::string, sf::Texture*> _textures;

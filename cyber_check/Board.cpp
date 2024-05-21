@@ -18,6 +18,7 @@ Board::Board(const sf::RenderWindow& window) {
     }
     field_size = y_eight;
     _hovered_field = fields[0];
+    _selected_field = vec2f(-1.0, -1.0);
 }
 
 vec2f Board::get_hovered() {
@@ -64,7 +65,9 @@ Piece* Board::get_piece_by_field(vec2f field) {
     }
     return nullptr;
 }
-
+std::vector<std::pair<vec2u, Piece*>>* Board::get_pieces() {
+    return &pieces;
+}
 
 
 void Board::update() {

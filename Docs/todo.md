@@ -1,5 +1,7 @@
-## pieces
-
+## pieces & logic
+1. add possible moves
+2. add taking opponent's pieces
+3. add checking mechanic
 - fix stacking queen legal fields colors
 
 ## state
@@ -10,7 +12,10 @@
 - add piece move invoking by method(to support chess engine)
 - make moves compatible with invoking and moving by mouse
 
-## board
-- differ black and white pieces
+## assetloader
+- move font from Game class to AssetLoader
+
+## renderer
+- impl renderer class for rendering game data
 
 ## menu

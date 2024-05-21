@@ -1,5 +1,9 @@
 #include"State.h"
 
+bool State::_turn = 1;
+player_pair State::_players = std::make_pair<Player*, Player*>(new Player(0), new Player(1));
+
+
 player_pair State::get_player() {
 	return _players;
 }
@@ -15,15 +19,4 @@ void State::turn() {
 
 bool State::whosturn() {
 	return _turn;
-}
-
-State::State() {
-	_players.first = new Player(0);
-	_players.first = new Player(1);
-	_turn = 0;
-}
-
-State::~State() {
-	delete _players.first;
-	delete _players.second;
 }

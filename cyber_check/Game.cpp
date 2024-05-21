@@ -6,7 +6,6 @@ Game::Game(sf::VideoMode vm, const sf::String& title, std::string font_path) {
     }
     _window = new sf::RenderWindow(vm, title, sf::Style::Resize | sf::Style::Fullscreen);
     _board = Board(*_window);
-    _state = State();
     _should_draw_legal_moves = false;
 }
 Game::~Game() {
@@ -151,7 +150,6 @@ void Game::run() {
     sf::Clock clock;
     bool is_holding = false;
     bool is_smth_selected = false;
-    bool drop = false;
     bool check_legal_moves = false;
     reset();
     
@@ -176,8 +174,21 @@ void Game::run() {
                 if (mouse_in_board_bounds()) {
                     is_holding = true;
                     if (!is_smth_selected) {
-                        _board.set_selected(_board.get_hovered());
-                        is_smth_selected = true;
+                        
+                        bool player_color = State::whosturn();
+                        auto hovered_piece = _board.get_piece_by_field(_board.get_hovered());
+                        
+                        if (hovered_piece && hovered_piece->get_color() == player_color) {
+                            _board.set_selected(hovered_piece->get_field_pos());
+                            is_smth_selected = true;
+                        }
+                        else {
+                            _board.set_selected(vec2f(-1.0, -1.0));
+                            is_smth_selected = false;
+                        }
+
+                        //_board.set_selected(_board.get_hovered());
+                        
                     }
                 }
                 break;
@@ -185,7 +196,6 @@ void Game::run() {
                 if (is_holding) {
                     is_holding = false;
                     is_smth_selected = false;
-                    drop = true;
                 }
                 break;
             default:
@@ -193,10 +203,12 @@ void Game::run() {
             }
 
         }
+        _should_draw_legal_moves = false;
         vec2f selected_field = _board.get_selected();
         Piece* selected_piece = _board.get_piece_by_field(selected_field);
         if (is_holding) {
             if (selected_piece) {
+                
                 sf::Vector2i mouse_pos = sf::Mouse::getPosition();
                 float mouse_x = (float)mouse_pos.x;
                 float mouse_y = (float)mouse_pos.y;
@@ -209,14 +221,10 @@ void Game::run() {
                 for (auto &legal_move : selected_piece->get_legal_moves()) {
                     legal_fields.push_back(_board.get_field_by_board_index(legal_move));
                 }
+
                 _board.set_current_legal_fields(legal_fields);
             }
-            else {
-                _should_draw_legal_moves = false;
-            }
-            
         }
-
 
         float delta_time = clock.restart().asSeconds();
 
@@ -227,6 +235,8 @@ void Game::run() {
             _fps = frame_count / frame_time;
             frame_count = 0;
             frame_time = 0.0f;
+
+     
         }
 
         update();
@@ -245,13 +255,37 @@ void Game::update() {
 void Game::render() {
     _window->clear(sf::Color::Black);
 
-    sf::Text text;
-    text.setFont(font);
-    text.setFillColor(BLACK);
-    text.setString(std::to_string(_fps));
-    text.setPosition(10.0f, 10.0f);
-    _window->draw(text);
+    // below will be later refactored to Renderer class
 
+    // FPS
+    
+    sf::Text fps;
+    fps.setFont(font);
+    fps.setFillColor(WHITE_PIECE);
+    std::string fps_string = "fps ";
+    fps_string.append(std::to_string((int)_fps));
+    fps.setString(fps_string);
+    fps.setPosition(SPACING::MARGIN, SPACING::MARGIN);
+
+
+    auto fps_bounds = fps.getGlobalBounds();
+    auto fps_right = fps_bounds.left + fps_bounds.width;
+    auto fps_bot = fps_bounds.top + fps_bounds.height;
+    _window->draw(fps);
+    
+
+    // WHO'S TURN
+
+    sf::Text whos_turn;
+    whos_turn.setFont(font);
+    whos_turn.setFillColor(State::whosturn() ? WHITE : BLACK);
+    std::string whos_turn_string = State::whosturn() ? "white" : "black";
+    whos_turn_string.append(" turn");
+    whos_turn.setString(whos_turn_string);
+    whos_turn.setPosition(fps_right + 2 * SPACING::MARGIN, SPACING::MARGIN);
+
+    _window->draw(whos_turn);
+    
     _board.draw(*_window);
     if (_should_draw_legal_moves) {
         _board.draw_legal_fields(*_window);

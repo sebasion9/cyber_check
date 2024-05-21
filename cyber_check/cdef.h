@@ -24,6 +24,10 @@ enum class PieceType {
 
 #define BLACK_PIECE sf::Color(0, 30, 100)
 
+namespace SPACING {
+    const auto MARGIN = 10.0f;
+}
+
 
 namespace TEXTURES {
     const auto PAWN = "assets/pawn.png";

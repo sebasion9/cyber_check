@@ -27,7 +27,7 @@ public:
 	vec2f get_field_by_board_index(vec2u board_index);
 	// piece methods
 	Piece* get_piece_by_field(vec2f field);
-
+	std::vector<std::pair<vec2u, Piece*>>* get_pieces();
 
 	void update();
 	void draw_legal_fields(sf::RenderWindow& window);

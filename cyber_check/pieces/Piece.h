@@ -1,6 +1,7 @@
 #pragma once
 #include"PieceLogic.h"
 #include"PieceView.h"
+#include"../state/State.h"
 class Piece : public PieceLogic, public PieceView {
 
 public:
