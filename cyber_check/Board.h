@@ -28,6 +28,8 @@ public:
 	// piece methods
 	Piece* get_piece_by_field(vec2f field);
 	std::vector<std::pair<vec2u, Piece*>>* get_pieces();
+	std::vector<std::vector<vec2u>> sort_lm_by_selected_piece(const std::vector<vec2u>& legal_moves, Piece* selected_piece);
+	std::vector<vec2u> correct_legal_moves(const std::vector<vec2u> &legal_moves, Piece* selected_piece);
 
 	void update();
 	void draw_legal_fields(sf::RenderWindow& window);

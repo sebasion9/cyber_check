@@ -49,3 +49,11 @@ void PieceLogic::set_board_index(uint32_t x, uint32_t y) {
 	_board_index = vec2u(x, y);
 }
 
+
+
+MoveType PieceLogic::get_mtype() {
+	return _mtype;
+}
+void PieceLogic::set_mtype(MoveType mtype) {
+	_mtype = mtype;
+}

@@ -1,9 +1,22 @@
 #pragma once
 #include"PieceView.h"
 #include<vector>
+
+enum MoveType {
+	JUMPY = 1 << 0,
+	DIAGONAL = 1 << 1,
+	STRAIGHT = 1 << 2
+
+};
+inline MoveType operator|(MoveType a, MoveType b)
+{
+	return static_cast<MoveType>(static_cast<int>(a) | static_cast<int>(b));
+}
+
 class PieceLogic {
 	vec2u _board_index;
 	bool _color;
+	MoveType _mtype;
 protected:
 	std::vector<vec2u> _legal_moves;
 	vec2u _calculate_board_index(vec2f field_pos, const std::vector<vec2f>& fields);
@@ -14,6 +27,8 @@ public:
 	void set_board_index(vec2u pos);
 	void set_board_index(uint32_t x, uint32_t y);
 
+	MoveType get_mtype();
+	void set_mtype(MoveType mtype);
 	bool is_in_legal_moves(vec2u board_index);
 	
 

@@ -23,7 +23,6 @@ public:
     ~Game();
     void load_textures();
     
-    void push_piece(uint32_t x, uint32_t y, sf::Color color, PieceType pt);
     void reset();
     
     bool mouse_in_board_bounds();

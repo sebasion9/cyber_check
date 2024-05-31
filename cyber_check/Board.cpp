@@ -68,6 +68,114 @@ Piece* Board::get_piece_by_field(vec2f field) {
 std::vector<std::pair<vec2u, Piece*>>* Board::get_pieces() {
     return &pieces;
 }
+std::vector<std::vector<vec2u>> Board::sort_lm_by_selected_piece(const std::vector<vec2u>& legal_moves, Piece* selected_piece) {
+    std::vector<std::vector<vec2u>> sorted_by_selpos_lm;
+    auto sel_move_type = selected_piece->get_mtype();
+    auto selPOS = selected_piece->get_board_index();
+    auto selX = selPOS.x;
+    auto selY = selPOS.y;
+    if (sel_move_type & JUMPY) {
+        sorted_by_selpos_lm.push_back(legal_moves);
+    }
+    if (sel_move_type & DIAGONAL) {
+        std::vector<vec2u> lu;
+        std::vector<vec2u> ld;
+        std::vector<vec2u> ru;
+        std::vector<vec2u> rd;
+        for (auto &legal_move : legal_moves) {
+            if (legal_move.y < selY && legal_move.x < selX) {
+                lu.insert(lu.begin(), legal_move);
+            }
+            if (legal_move.y < selY && legal_move.x > selX) {
+                ru.push_back(legal_move);
+            }
+
+            if (legal_move.y > selY && legal_move.x < selX) {
+                ld.insert(ld.begin(), legal_move);
+            }
+            if (legal_move.y > selY && legal_move.x > selX) {
+                rd.push_back(legal_move);
+            }
+        }
+        sorted_by_selpos_lm.push_back(lu);
+        sorted_by_selpos_lm.push_back(ld);
+        sorted_by_selpos_lm.push_back(ru);
+        sorted_by_selpos_lm.push_back(rd);
+
+    }
+    if (sel_move_type & STRAIGHT) {
+        std::vector<vec2u> l;
+        std::vector<vec2u> u;
+        std::vector<vec2u> r;
+        std::vector<vec2u> d;
+        for (auto &legal_move : legal_moves) {
+            if (legal_move.y == selY && legal_move.x < selX) {
+                l.insert(l.begin(), legal_move);
+            }
+            if (legal_move.y == selY && legal_move.x > selX) {
+                r.push_back(legal_move);
+            }
+            if (legal_move.y < selY && legal_move.x == selX) {
+                u.insert(u.begin(), legal_move);
+            }
+            if (legal_move.y > selY && legal_move.x == selX) {
+                d.push_back(legal_move);
+            }
+        }
+        sorted_by_selpos_lm.push_back(l);
+        sorted_by_selpos_lm.push_back(r);
+        sorted_by_selpos_lm.push_back(u);
+        sorted_by_selpos_lm.push_back(d);
+    }
+
+    return sorted_by_selpos_lm;
+}
+
+
+
+std::vector<vec2u> Board::correct_legal_moves(const std::vector<vec2u>& legal_moves, Piece* selected_piece) {
+    std::vector<vec2u> corrected;
+    auto sorted_legal_moves_by_selected = sort_lm_by_selected_piece(legal_moves, selected_piece);
+    bool found = false;
+    if (selected_piece->get_mtype() & JUMPY) {
+        for (auto& moves : sorted_legal_moves_by_selected) {
+            for (auto& move : moves) {
+                for (auto& piece : pieces) {
+                    if (move.x == piece.second->get_board_index().x && move.y == piece.second->get_board_index().y && selected_piece->get_color() == piece.second->get_color()) {
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    corrected.push_back(move);
+                }
+                found = false;
+            }
+        }
+        return corrected;
+    }
+    
+
+    found = false;
+    bool ally = false;
+    for (auto &moves : sorted_legal_moves_by_selected) {
+        for (auto &move : moves) {
+            found = false;
+            for (auto &piece : pieces) {
+                if (move.x == piece.second->get_board_index().x && move.y == piece.second->get_board_index().y) {
+                    found = true;
+                    ally = selected_piece->get_color() == piece.second->get_color();
+                    break;
+                }
+            }
+            if (found) {
+                if (!ally) corrected.push_back(move);
+                break;
+            }
+            corrected.push_back(move);
+        }
+    }
+    return corrected;
+}
 
 
 void Board::update() {

@@ -9,8 +9,8 @@ std::vector<vec2u> Pawn::find_legal_moves() {
 	// WHITE PAWN
 	if (get_color()) {
 		if (y == 6) {
-			vec.push_back(vec2u(x, 5));
 			vec.push_back(vec2u(x, 4));
+			vec.push_back(vec2u(x, 5));
 			return vec;
 		}
 		if (y > 0) {
@@ -18,6 +18,7 @@ std::vector<vec2u> Pawn::find_legal_moves() {
 		}
 		return vec;
 	}
+	// BLACK PAWN
 	if (y == 1) {
 		vec.push_back(vec2u(x, 2));
 		vec.push_back(vec2u(x, 3));

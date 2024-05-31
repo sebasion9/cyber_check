@@ -33,6 +33,7 @@ Piece::Piece(
 	const vec2f& pos,
 	uint32_t field_size,
 	sf::Color color,
+	MoveType mtype,
 	vec2u board_index)
 
 	: PieceView(texture,
@@ -41,6 +42,8 @@ Piece::Piece(
 		color) {
 	set_board_index(board_index);
 	color == WHITE_PIECE ? set_color(1) : set_color(0);
+	set_legal_moves(find_legal_moves());
+	set_mtype(mtype);
 };
 
 

@@ -28,121 +28,174 @@ void Game::load_textures() {
     _textures = AssetLoader::load_textures();
 }
 
-void Game::push_piece(uint32_t x, uint32_t y, sf::Color color, PieceType pt) {
-    switch (pt) {
-    case PieceType::ROOK:
-        if (true) {
-            Piece* rook_piece = new Rook(
-                _textures["rook"],
-                _board.fields[y * 8 + x],
-                _board.field_size,
-                color,
-                vec2u(x, y)
-            );
-            rook_piece->set_legal_moves(rook_piece->find_legal_moves());
-            _board.pieces.push_back(std::make_pair(vec2u(x, y), rook_piece));
-        }
-        break;
-        
-    case PieceType::BISHOP:
-        if (true) {
-            Piece* bishop_piece = new Bishop(
-                _textures["bishop"],
-                _board.fields[y * 8 + x],
-                _board.field_size,
-                color,
-                vec2u(x, y)
-            );
-            bishop_piece->set_legal_moves(bishop_piece->find_legal_moves());
-            _board.pieces.push_back(std::make_pair(vec2u(x, y), bishop_piece));
-        }
-        break;
-    case PieceType::HORSE:
-        if (true) {
-            Piece* knight_piece = new Knight(
-                _textures["horse"],
-                _board.fields[y * 8 + x],
-                _board.field_size,
-                color,
-                vec2u(x, y)
-            );
-            knight_piece->set_legal_moves(knight_piece->find_legal_moves());
-            _board.pieces.push_back(std::make_pair(vec2u(x, y), knight_piece));
-        }
-        break;
-    case PieceType::KING:
-        if (true) {
-            Piece* king_piece = new King(
-                _textures["king"],
-                _board.fields[y * 8 + x],
-                _board.field_size,
-                color,
-                vec2u(x, y)
-            );
-            king_piece->set_legal_moves(king_piece->find_legal_moves());
-            _board.pieces.push_back(std::make_pair(vec2u(x, y), king_piece));
-        }
-        break;
-
-    case PieceType::QUEEN:
-        if (true) {
-            Piece* queen_piece = new Queen(
-                    _textures["queen"],
-                    _board.fields[y * 8 + x],
-                    _board.field_size,
-                    color,
-                    vec2u(x, y)
-                    );
-            queen_piece->set_legal_moves(queen_piece->find_legal_moves());
-            _board.pieces.push_back(std::make_pair(vec2u(x, y), queen_piece));
-        }
-        break;
-
-    default:
-        Piece* pawn_piece = new Pawn(
-            _textures["pawn"], 
-            _board.fields[y*8 + x], 
-            _board.field_size, 
-            color,
-            vec2u(x, y)
-            );
-        pawn_piece->set_legal_moves(pawn_piece->find_legal_moves());
-        _board.pieces.push_back(std::make_pair(vec2u(x,y), pawn_piece));
-        break;
-    }
-
-    
-}
-
 void Game::reset() {
 
     for (size_t i = 0 ; i < 8; i++) {
-        push_piece(i, 1, BLACK_PIECE, PieceType::PAWN);
+        _board.pieces.push_back(
+            std::make_pair(vec2u(i, 1), new Pawn(
+                _textures["pawn"],
+                _board.fields[1*8 + i],
+                _board.field_size,
+                BLACK_PIECE,
+                STRAIGHT,
+                vec2u(i, 1))));
+        _board.pieces.push_back(
+            std::make_pair(vec2u(i, 6), new Pawn(
+                _textures["pawn"],
+                _board.fields[6*8 + i],
+                _board.field_size,
+                WHITE_PIECE,
+                STRAIGHT,
+                vec2u(i, 6))));
     }
-    for (size_t i = 0; i < 8; i++) {
-        push_piece(i, 6, WHITE_PIECE, PieceType::PAWN);
-    }
+    _board.pieces.push_back(
+        std::make_pair(vec2u(0, 0), new Rook(
+            _textures["rook"],
+            _board.fields[0],
+            _board.field_size,
+            BLACK_PIECE,
+            STRAIGHT,
+            vec2u(0, 0)
+        )));
+    _board.pieces.push_back(
+        std::make_pair(vec2u(7, 0), new Rook(
+            _textures["rook"],
+            _board.fields[7],
+            _board.field_size,
+            BLACK_PIECE,
+            STRAIGHT,
+            vec2u(7, 0)
+        )));
 
-    push_piece(0,0, BLACK_PIECE, PieceType::ROOK);
-    push_piece(7,0, BLACK_PIECE, PieceType::ROOK);
-    push_piece(0, 7, WHITE_PIECE, PieceType::ROOK);
-    push_piece(7, 7, WHITE_PIECE, PieceType::ROOK);
+    _board.pieces.push_back(
+        std::make_pair(vec2u(7, 7), new Rook(
+            _textures["rook"],
+            _board.fields[7*8+7],
+            _board.field_size,
+            WHITE_PIECE,
+            STRAIGHT,
+            vec2u(7, 7)
+        )));
+    _board.pieces.push_back(
+        std::make_pair(vec2u(0, 7), new Rook(
+            _textures["rook"],
+            _board.fields[7*8],
+            _board.field_size,
+            WHITE_PIECE,
+            STRAIGHT,
+            vec2u(0, 7)
+        )));
+    _board.pieces.push_back(
+        std::make_pair(vec2u(1, 0), new Knight(
+            _textures["horse"],
+            _board.fields[1],
+            _board.field_size,
+            BLACK_PIECE,
+            JUMPY,
+            vec2u(1,0)
+        )));
+    _board.pieces.push_back(
+        std::make_pair(vec2u(6, 0), new Knight(
+            _textures["horse"],
+            _board.fields[6],
+            _board.field_size,
+            BLACK_PIECE,
+            JUMPY,
+            vec2u(6, 0)
+        )));
+    _board.pieces.push_back(
+        std::make_pair(vec2u(1, 7), new Knight(
+            _textures["horse"],
+            _board.fields[1+8*7],
+            _board.field_size,
+            WHITE_PIECE,
+            JUMPY,
+            vec2u(1, 7)
+        )));
+    _board.pieces.push_back(
+        std::make_pair(vec2u(6, 7), new Knight(
+            _textures["horse"],
+            _board.fields[6+7*8],
+            _board.field_size,
+            WHITE_PIECE,
+            JUMPY,
+            vec2u(6, 7)
+        )));
 
-    push_piece(1, 0, BLACK_PIECE, PieceType::HORSE);
-    push_piece(6, 0, BLACK_PIECE, PieceType::HORSE);
-    push_piece(1, 7, WHITE_PIECE, PieceType::HORSE);
-    push_piece(6, 7, WHITE_PIECE, PieceType::HORSE);
+    _board.pieces.push_back(
+        std::make_pair(vec2u(3, 0), new Queen(
+            _textures["queen"],
+            _board.fields[3],
+            _board.field_size,
+            BLACK_PIECE,
+            STRAIGHT | DIAGONAL,
+            vec2u(3, 0)
+        )));
+    _board.pieces.push_back(
+        std::make_pair(vec2u(3, 7), new Queen(
+            _textures["queen"],
+            _board.fields[3 + 7 * 8],
+            _board.field_size,
+            WHITE_PIECE,
+            STRAIGHT | DIAGONAL,
+            vec2u(3, 7)
+        )));
 
-    push_piece(3, 0, BLACK_PIECE, PieceType::QUEEN);
-    push_piece(3, 7, WHITE_PIECE, PieceType::QUEEN);
+    _board.pieces.push_back(
+        std::make_pair(vec2u(4, 0), new King(
+            _textures["king"],
+            _board.fields[4],
+            _board.field_size,
+            BLACK_PIECE,
+            STRAIGHT | DIAGONAL,
+            vec2u(4, 0)
+        )));
+    _board.pieces.push_back(
+        std::make_pair(vec2u(4, 7), new King(
+            _textures["king"],
+            _board.fields[4 + 7 * 8],
+            _board.field_size,
+            WHITE_PIECE,
+            STRAIGHT | DIAGONAL,
+            vec2u(4, 7)
+        )));
 
-    push_piece(4, 0, BLACK_PIECE, PieceType::KING);
-    push_piece(4, 7, WHITE_PIECE, PieceType::KING);
-
-    push_piece(2, 0, BLACK_PIECE, PieceType::BISHOP);
-    push_piece(5, 0, BLACK_PIECE, PieceType::BISHOP);
-    push_piece(2, 7, WHITE_PIECE, PieceType::BISHOP);
-    push_piece(5, 7, WHITE_PIECE, PieceType::BISHOP);
+    _board.pieces.push_back(
+        std::make_pair(vec2u(2, 0), new Bishop(
+            _textures["bishop"],
+            _board.fields[2],
+            _board.field_size,
+            BLACK_PIECE,
+            DIAGONAL,
+            vec2u(2, 0)
+        )));
+    _board.pieces.push_back(
+        std::make_pair(vec2u(5, 0), new Bishop(
+            _textures["bishop"],
+            _board.fields[5],
+            _board.field_size,
+            BLACK_PIECE,
+            DIAGONAL,
+            vec2u(5, 0)
+        )));
+    _board.pieces.push_back(
+        std::make_pair(vec2u(2, 7), new Bishop(
+            _textures["bishop"],
+            _board.fields[2 + 8 * 7],
+            _board.field_size,
+            WHITE_PIECE,
+            DIAGONAL,
+            vec2u(2, 7)
+        )));
+    _board.pieces.push_back(
+        std::make_pair(vec2u(5, 7), new Bishop(
+            _textures["bishop"],
+            _board.fields[5 + 7 * 8],
+            _board.field_size,
+            WHITE_PIECE,
+            DIAGONAL,
+            vec2u(5, 7)
+        )));
 }
 
 void Game::run() {
@@ -214,7 +267,11 @@ void Game::run() {
                 float mouse_y = (float)mouse_pos.y;
                 selected_piece->set_act_pos_mouse(mouse_x, mouse_y);
                 vec2u board_index = selected_piece->get_board_index();
-                selected_piece->set_legal_moves(selected_piece->find_legal_moves());
+                // correct_legal_moves
+                auto legal_moves = selected_piece->find_legal_moves();
+                auto corrected_legal_moves = _board.correct_legal_moves(legal_moves, selected_piece);
+               
+                selected_piece->set_legal_moves(corrected_legal_moves);
 
                 _should_draw_legal_moves = true;
                 std::vector<vec2f> legal_fields;

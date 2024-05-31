@@ -1,11 +1,9 @@
 ## pieces & logic
-1. add possible moves
-2. add taking opponent's pieces
-3. add checking mechanic
-- fix stacking queen legal fields colors
+1. add taking opponent's pieces
+2. add checking mechanic
 
 ## state
-- switch turns, count score
+- count score
 - handle win condition
 
 ## player
@@ -19,3 +17,4 @@
 - impl renderer class for rendering game data
 
 ## menu
+
