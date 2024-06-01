@@ -1,12 +1,10 @@
 #include"Game.h"
 Game::Game(sf::VideoMode vm, const sf::String& title, std::string font_path) {
-    if (!font.loadFromFile(font_path)) {
-        std::cerr << "couldnt load font, exiting now";
-        exit(1);
-    }
+
     _window = new sf::RenderWindow(vm, title, sf::Style::Resize | sf::Style::Fullscreen);
     _board = Board(*_window);
     _should_draw_legal_moves = false;
+    _renderer = TextRenderer(_board.fields[0], _board.field_size * 8, font_path);
 }
 Game::~Game() {
     delete _window;
@@ -239,8 +237,6 @@ void Game::run() {
                             _board.set_selected(vec2f(-1.0, -1.0));
                             is_smth_selected = false;
                         }
-
-                        //_board.set_selected(_board.get_hovered());
                         
                     }
                 }
@@ -305,45 +301,15 @@ void Game::run() {
 
 void Game::update() {
     _board.update();
+    _renderer.update_texts(_fps);
 }
 
 
 
 void Game::render() {
     _window->clear(sf::Color::Black);
-
-    // below will be later refactored to Renderer class
-
-    // FPS
-    
-    sf::Text fps;
-    fps.setFont(font);
-    fps.setFillColor(WHITE_PIECE);
-    std::string fps_string = "fps ";
-    fps_string.append(std::to_string((int)_fps));
-    fps.setString(fps_string);
-    fps.setPosition(SPACING::MARGIN, SPACING::MARGIN);
-
-
-    auto fps_bounds = fps.getGlobalBounds();
-    auto fps_right = fps_bounds.left + fps_bounds.width;
-    auto fps_bot = fps_bounds.top + fps_bounds.height;
-    _window->draw(fps);
-    
-
-    // WHO'S TURN
-
-    sf::Text whos_turn;
-    whos_turn.setFont(font);
-    whos_turn.setFillColor(State::whosturn() ? WHITE : BLACK);
-    std::string whos_turn_string = State::whosturn() ? "white" : "black";
-    whos_turn_string.append(" turn");
-    whos_turn.setString(whos_turn_string);
-    whos_turn.setPosition(fps_right + 2 * SPACING::MARGIN, SPACING::MARGIN);
-
-    _window->draw(whos_turn);
-    
     _board.draw(*_window);
+    _renderer.draw(*_window);
     if (_should_draw_legal_moves) {
         _board.draw_legal_fields(*_window);
     }

@@ -8,8 +8,8 @@ public:
 
 	static player_pair _players;
 	static bool _turn;
-	player_pair get_player();
-	Player* get_player(bool id);
+	static player_pair get_player();
+	static Player* get_player(bool id);
 	static void turn();
 	static bool whosturn();
 

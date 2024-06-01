@@ -2,6 +2,7 @@
 #include<SFML/Graphics.hpp>
 #include<unordered_map>
 #include"Board.h"
+#include"TextRenderer.h"
 #include"pieces/Rook.h"
 #include"pieces/Bishop.h"
 #include"pieces/Knight.h"
@@ -15,6 +16,7 @@ class Game {
     bool _should_draw_legal_moves;
     float _fps;
     Board _board;
+    TextRenderer _renderer;
     sf::RenderWindow* _window;
     std::unordered_map<std::string, sf::Texture*> _textures;
 public:

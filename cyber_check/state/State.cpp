@@ -1,7 +1,7 @@
 #include"State.h"
 
 bool State::_turn = 1;
-player_pair State::_players = std::make_pair<Player*, Player*>(new Player(0), new Player(1));
+player_pair State::_players = std::make_pair<Player*, Player*>(new Player(0, "Czarne"), new Player(1, "Biale"));
 
 
 player_pair State::get_player() {

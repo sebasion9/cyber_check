@@ -72,6 +72,9 @@
     <ClCompile Include="state\State.cpp">
       <Filter>Pliki źródłowe\state</Filter>
     </ClCompile>
+    <ClCompile Include="TextRenderer.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pieces\PieceView.h">
@@ -118,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="state\State.h">
       <Filter>Pliki nagłówkowe\state</Filter>
+    </ClInclude>
+    <ClInclude Include="TextRenderer.h">
+      <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
