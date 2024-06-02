@@ -30,3 +30,44 @@ std::vector<vec2u> Pawn::find_legal_moves() {
 
 	return vec;
 }
+std::vector<vec2u> Pawn::special_legal_moves(std::vector<vec2u> legal_moves, std::vector<std::pair<vec2u, Piece*>> pieces) {
+	auto board_idx = get_board_index();
+	auto pawnX = board_idx.x;
+	auto pawnY = board_idx.y;
+	if (get_color()) {
+		for (auto& piece : pieces) {
+			auto pieceXY = piece.second->get_board_index();
+			if (pieceXY.y == pawnY - 1 && (pieceXY.x == pawnX - 1 || pieceXY.x == pawnX + 1)
+				&& piece.second->get_color() != get_color()) {
+				legal_moves.push_back(pieceXY);
+			}
+			if (pieceXY.y == pawnY - 1 && pieceXY.x == pawnX) {
+				auto found = std::find(legal_moves.begin(), legal_moves.end(), pieceXY);
+				if (found != legal_moves.end()) {
+					legal_moves.erase(found);
+				}
+			}
+		}
+		return legal_moves;
+	}
+	for (auto& piece : pieces) {
+		auto pieceXY = piece.second->get_board_index();
+		if (pieceXY.y == pawnY + 1 && (pieceXY.x == pawnX - 1 || pieceXY.x == pawnX + 1)
+			&& piece.second->get_color() != get_color()) {
+			legal_moves.push_back(pieceXY);
+		}
+		if (pieceXY.y == pawnY + 1 && pieceXY.x == pawnX) {
+			auto found = std::find(legal_moves.begin(), legal_moves.end(), pieceXY);
+			if (found != legal_moves.end()) {
+				legal_moves.erase(found);
+			}
+		}
+	}
+	return legal_moves;
+}
+
+
+
+int Pawn::get_value() {
+	return 1;
+}

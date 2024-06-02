@@ -1,6 +1,6 @@
 #include"Piece.h"
 
-void Piece::update(uint32_t field_size, const std::vector<vec2f>& fields) {
+int Piece::update(uint32_t field_size, const std::vector<vec2f>& fields) {
 	vec2u old_board_index = get_board_index();
 	
 	vec2f field = _find_field_pos_from_actual_center(field_size, fields);
@@ -14,18 +14,22 @@ void Piece::update(uint32_t field_size, const std::vector<vec2f>& fields) {
 		set_act_pos(actual_pos);
 		if (old_board_index.x != board_index.x || old_board_index.y != board_index.y) {
 			State::turn();
+			return 1;
 		}
-		return;
+		return 0;
 	}
 	
 	vec2f old_act_pos = _calculate_actual_pos(field_size, get_field_pos());
 	set_act_pos(old_act_pos);
-	
+	return 0;
 }
 
 std::vector<vec2u> Piece::find_legal_moves() {
 	std::vector<vec2u> vec;
 	return vec;
+}
+std::vector<vec2u> Piece::special_legal_moves(std::vector<vec2u> legal_moves, std::vector<std::pair<vec2u, Piece*>> pieces) {
+	return legal_moves;
 }
 
 Piece::Piece(

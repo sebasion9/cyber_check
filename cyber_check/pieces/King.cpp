@@ -18,5 +18,9 @@ std::vector<vec2u> King::find_legal_moves() {
 }
 
 
+int King::get_value() {
+	return 0;
+}
+
 
 

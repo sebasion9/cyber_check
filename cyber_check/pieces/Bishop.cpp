@@ -26,5 +26,7 @@ std::vector<vec2u> Bishop::find_legal_moves() {
 }
 
 
-
+int Bishop::get_value() {
+	return 3;
+}
 

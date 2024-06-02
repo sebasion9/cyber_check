@@ -30,6 +30,7 @@ public:
 	std::vector<std::pair<vec2u, Piece*>>* get_pieces();
 	std::vector<std::vector<vec2u>> sort_lm_by_selected_piece(const std::vector<vec2u>& legal_moves, Piece* selected_piece);
 	std::vector<vec2u> correct_legal_moves(const std::vector<vec2u> &legal_moves, Piece* selected_piece);
+	std::vector<int> get_pieceidx_by_boardidx(vec2u board_idx);
 
 	void update();
 	void draw_legal_fields(sf::RenderWindow& window);

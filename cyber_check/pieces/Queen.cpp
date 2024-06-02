@@ -30,6 +30,8 @@ std::vector<vec2u> Queen::find_legal_moves() {
 	return vec;
 }
 
-
+int Queen::get_value() {
+	return 9;
+}
 
 

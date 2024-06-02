@@ -1,9 +1,10 @@
 ## pieces & logic
-1. add taking opponent's pieces
-2. add checking mechanic
+- add checking mechanic/king special legal moves
+- checkmate
+- en passant
+- optimize pieces for loops
 
 ## state
-- count score
 - add 2nd clocks on separate threads
 - handle win condition
 
@@ -13,3 +14,5 @@
 
 ## general
 - optimize the parts where sf objects are initialized
+
+## stockfish

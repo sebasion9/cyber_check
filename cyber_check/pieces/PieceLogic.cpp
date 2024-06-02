@@ -20,6 +20,9 @@ bool PieceLogic::is_in_legal_moves(vec2u board_index) {
 	}
 	return res;
 }
+int PieceLogic::get_value() {
+	return value;
+}
 bool PieceLogic::get_color() {
 	return _color;
 }

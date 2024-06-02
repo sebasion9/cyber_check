@@ -6,8 +6,8 @@ enum MoveType {
 	JUMPY = 1 << 0,
 	DIAGONAL = 1 << 1,
 	STRAIGHT = 1 << 2
-
 };
+
 inline MoveType operator|(MoveType a, MoveType b)
 {
 	return static_cast<MoveType>(static_cast<int>(a) | static_cast<int>(b));
@@ -20,7 +20,9 @@ class PieceLogic {
 protected:
 	std::vector<vec2u> _legal_moves;
 	vec2u _calculate_board_index(vec2f field_pos, const std::vector<vec2f>& fields);
+	int value;
 public:
+	virtual int get_value();
 	bool get_color();
 	void set_color(bool col);
 	vec2u get_board_index();

@@ -8,14 +8,6 @@ void Player::set_color(bool color) {
 	_color = color;
 }
 
-int Player::get_score() {
-	return _score;
-}
-
-void Player::set_score(int score) {
-	_score = score;
-}
-
 int Player::get_time() {
 	return _time;
 }
@@ -32,7 +24,6 @@ void Player::set_name(std::string name) {
 
 Player::Player(bool color, std::string name) {
 	set_name(name);
-	set_score(0);
 	set_color(color);
 	// dev value, before time formatting
 	set_time(1000);

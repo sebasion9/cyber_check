@@ -1,5 +1,5 @@
 #include"State.h"
-
+int State::score = 0;
 bool State::_turn = 1;
 player_pair State::_players = std::make_pair<Player*, Player*>(new Player(0, "Czarne"), new Player(1, "Biale"));
 
@@ -19,4 +19,11 @@ void State::turn() {
 
 bool State::whosturn() {
 	return _turn;
+}
+
+int State::get_score() {
+	return score;
+}
+void State::set_score(int _score) {
+	score = _score;
 }

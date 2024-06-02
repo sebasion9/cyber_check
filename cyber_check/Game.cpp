@@ -194,6 +194,11 @@ void Game::reset() {
             DIAGONAL,
             vec2u(5, 7)
         )));
+    for (auto& piece : _board.pieces) {
+        auto legal_moves = piece.second->find_legal_moves();
+        auto corrected_legal_moves = _board.correct_legal_moves(legal_moves, piece.second);
+        piece.second->set_legal_moves(corrected_legal_moves);
+    }
 }
 
 void Game::run() {
@@ -252,6 +257,13 @@ void Game::run() {
             }
 
         }
+        for (auto& piece : _board.pieces) {
+            auto legal_moves = piece.second->find_legal_moves();
+            auto corrected_legal_moves = _board.correct_legal_moves(legal_moves, piece.second);
+            auto special_legal_moves = piece.second->special_legal_moves(corrected_legal_moves, _board.pieces);
+            piece.second->set_legal_moves(special_legal_moves);
+        }
+
         _should_draw_legal_moves = false;
         vec2f selected_field = _board.get_selected();
         Piece* selected_piece = _board.get_piece_by_field(selected_field);
@@ -263,11 +275,13 @@ void Game::run() {
                 float mouse_y = (float)mouse_pos.y;
                 selected_piece->set_act_pos_mouse(mouse_x, mouse_y);
                 vec2u board_index = selected_piece->get_board_index();
-                // correct_legal_moves
                 auto legal_moves = selected_piece->find_legal_moves();
                 auto corrected_legal_moves = _board.correct_legal_moves(legal_moves, selected_piece);
-               
-                selected_piece->set_legal_moves(corrected_legal_moves);
+                auto special_legal_moves = selected_piece->special_legal_moves(corrected_legal_moves, _board.pieces);
+
+                // special moves, for pawn & king
+                
+                selected_piece->set_legal_moves(special_legal_moves);
 
                 _should_draw_legal_moves = true;
                 std::vector<vec2f> legal_fields;

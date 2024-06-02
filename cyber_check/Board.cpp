@@ -176,14 +176,39 @@ std::vector<vec2u> Board::correct_legal_moves(const std::vector<vec2u>& legal_mo
     }
     return corrected;
 }
+std::vector<int> Board::get_pieceidx_by_boardidx(vec2u board_idx) {
+    std::vector<int> res;
+    for (size_t i = 0; i < pieces.size(); i++) {
+        if (pieces[i].second->get_board_index() == board_idx) {
+            res.push_back(i);
+        }
+    }
+    return res;
+}
 
 
 void Board::update() {
     for (auto const &piece : pieces) {
+        bool piece_color = piece.second->get_color();
         if (!sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            piece.second->update(field_size, fields);
+            int res = piece.second->update(field_size, fields);
+            if (res) {
+                auto piece_idxs = get_pieceidx_by_boardidx(piece.second->get_board_index());
+                if (piece_idxs.size() > 1) {
+                    for (auto& idx : piece_idxs) {
+                        if (pieces[idx].second->get_color() != piece_color) {
+                            int new_value = pieces[idx].second->get_value();
+                            int state_score = State::get_score();
+                            State::set_score(state_score + (piece_color ? new_value : new_value * -1));
+                            pieces.erase(pieces.begin() + idx);
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
+    
 }
 
 void Board::draw_legal_fields(sf::RenderWindow& window) {

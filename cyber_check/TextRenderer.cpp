@@ -4,6 +4,7 @@
 void TextRenderer::draw(sf::RenderWindow& window) {
     window.draw(_fps_text);
     window.draw(_whos_turn_text);
+
     window.draw(_player1.name);
     window.draw(_player1.score);
     window.draw(_player1.time);
@@ -16,14 +17,21 @@ void TextRenderer::draw(sf::RenderWindow& window) {
 void TextRenderer::update_texts(float fps) {
     _fps_text.setString("fps " + std::to_string((int)fps));
     _fps_text.setFont(_font);
-    
+    int state_score = State::get_score();
+    int score_flag = state_score < 0 && state_score != 0;
     _player1.name.setFont(_font);
     _player1.score.setFont(_font);
+    _player1.score.setString(score_flag ? "+" + std::to_string(abs(state_score)) : "");
+    // DBG
     _player1.time.setFont(_font);
+    _player1.time.setString("3:00");
 
     _player2.name.setFont(_font);
     _player2.score.setFont(_font);
+    _player2.score.setString(score_flag ? "" : "+" + std::to_string(abs(state_score)));
+    // DBG
     _player2.time.setFont(_font);
+    _player2.time.setString("3:00");
 
     _whos_turn_text.setString(State::whosturn() ? "white turn" : "black turn");
     _whos_turn_text.setFillColor(State::whosturn() ? WHITE : BLACK);
@@ -44,7 +52,6 @@ TextRenderer::TextRenderer() {
 }
 
 TextRenderer::TextRenderer(vec2f board_pos, int board_size, std::string font_path) {
-	// all texts defined here
     if (!_font.loadFromFile(font_path)) {
         std::cerr << "couldnt load font, exiting now";
         exit(1);
@@ -67,8 +74,6 @@ TextRenderer::TextRenderer(vec2f board_pos, int board_size, std::string font_pat
     auto fps_bot = fps_bounds.top + fps_bounds.height;
 
 
-
-
     // PLAYER NAME, SCORE, TIME
     player_pair players = State::get_player();
     
@@ -86,7 +91,9 @@ TextRenderer::TextRenderer(vec2f board_pos, int board_size, std::string font_pat
         _board_pos.y - SPACING::BOARD_OFFSET + (double)_board_size * 3.0/8.0));
 
     player1_score.setFillColor(BLACK);
-    player1_score.setString("score " + std::to_string(players.first->get_score()));
+    //
+    player1_score.setString("");
+    //
     player1_score.setPosition(vec2f(
         _board_pos.x + (double)_board_size + SPACING::MARGIN,
         player1_name.getGlobalBounds().top + (double)_board_size/8.0/2.0 - SPACING::BOARD_OFFSET
@@ -109,7 +116,9 @@ TextRenderer::TextRenderer(vec2f board_pos, int board_size, std::string font_pat
         _board_pos.y - SPACING::BOARD_OFFSET + (double)_board_size / 2.0));
     
     player2_score.setFillColor(WHITE);
-    player2_score.setString("score " + std::to_string(players.second->get_score()));
+    //
+    player2_score.setString("");
+    //
     player2_score.setPosition(vec2f(
         _board_pos.x + (double)_board_size + SPACING::MARGIN,
         player2_time.getGlobalBounds().top + (double)_board_size / 8.0 / 2.0 - SPACING::BOARD_OFFSET

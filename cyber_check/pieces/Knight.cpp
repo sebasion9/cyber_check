@@ -54,3 +54,6 @@ std::vector<vec2u> Knight::find_legal_moves() {
 
 
 
+int Knight::get_value() {
+	return 3;
+}
