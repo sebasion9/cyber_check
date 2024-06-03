@@ -31,6 +31,9 @@ std::vector<vec2u> Piece::find_legal_moves() {
 std::vector<vec2u> Piece::special_legal_moves(std::vector<vec2u> legal_moves, std::vector<std::pair<vec2u, Piece*>> pieces) {
 	return legal_moves;
 }
+bool Piece::is_king() {
+	return false;
+}
 
 Piece::Piece(
 	sf::Texture* texture,

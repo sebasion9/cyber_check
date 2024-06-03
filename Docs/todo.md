@@ -1,5 +1,7 @@
 ## pieces & logic
-- add checking mechanic/king special legal moves
+- add "protection" of pieces, so the king cant take pieces under protection
+of other pieces (works but needs more testing)
+- pawn correct under attack fields
 - checkmate
 - en passant
 - optimize pieces for loops

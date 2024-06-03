@@ -257,11 +257,26 @@ void Game::run() {
             }
 
         }
+        State::set_under_attack({});
         for (auto& piece : _board.pieces) {
+            if (piece.second->is_king()) {
+                continue;
+            }
             auto legal_moves = piece.second->find_legal_moves();
             auto corrected_legal_moves = _board.correct_legal_moves(legal_moves, piece.second);
             auto special_legal_moves = piece.second->special_legal_moves(corrected_legal_moves, _board.pieces);
             piece.second->set_legal_moves(special_legal_moves);
+            if (piece.second->get_color() != State::whosturn()) {
+                State::append_ua_fields(piece.second->get_legal_moves());
+            }
+        }
+        for (auto& piece : _board.pieces) {
+            if (piece.second->is_king()) {
+                auto legal_moves = piece.second->find_legal_moves();
+                auto corrected_legal_moves = _board.correct_legal_moves(legal_moves, piece.second);
+                auto special_legal_moves = piece.second->special_legal_moves(corrected_legal_moves, _board.pieces);
+                piece.second->set_legal_moves(special_legal_moves);
+            }
         }
 
         _should_draw_legal_moves = false;
@@ -274,14 +289,6 @@ void Game::run() {
                 float mouse_x = (float)mouse_pos.x;
                 float mouse_y = (float)mouse_pos.y;
                 selected_piece->set_act_pos_mouse(mouse_x, mouse_y);
-                vec2u board_index = selected_piece->get_board_index();
-                auto legal_moves = selected_piece->find_legal_moves();
-                auto corrected_legal_moves = _board.correct_legal_moves(legal_moves, selected_piece);
-                auto special_legal_moves = selected_piece->special_legal_moves(corrected_legal_moves, _board.pieces);
-
-                // special moves, for pawn & king
-                
-                selected_piece->set_legal_moves(special_legal_moves);
 
                 _should_draw_legal_moves = true;
                 std::vector<vec2f> legal_fields;

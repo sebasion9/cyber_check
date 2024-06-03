@@ -157,18 +157,30 @@ std::vector<vec2u> Board::correct_legal_moves(const std::vector<vec2u>& legal_mo
 
     found = false;
     bool ally = false;
+    bool is_king = false;
+    bool is_pieces_turn = State::whosturn();
     for (auto &moves : sorted_legal_moves_by_selected) {
         for (auto &move : moves) {
             found = false;
             for (auto &piece : pieces) {
+                is_king = piece.second->is_king();
+                ally = selected_piece->get_color() == piece.second->get_color();
+                if (is_king && !ally) {
+                    continue;
+                }
                 if (move.x == piece.second->get_board_index().x && move.y == piece.second->get_board_index().y) {
                     found = true;
-                    ally = selected_piece->get_color() == piece.second->get_color();
                     break;
                 }
             }
             if (found) {
-                if (!ally) corrected.push_back(move);
+                if (!ally) {
+                    corrected.push_back(move);
+                }
+                // works but needs more testing
+                if (selected_piece->get_color() == !is_pieces_turn) {
+                    corrected.push_back(move);
+                }
                 break;
             }
             corrected.push_back(move);
