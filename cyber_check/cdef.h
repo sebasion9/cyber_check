@@ -24,6 +24,7 @@ enum class PieceType {
 
 #define BLACK_PIECE sf::Color(0, 30, 100)
 
+
 namespace SPACING {
     const auto MARGIN = 10.0f;
     const auto BOARD_OFFSET = 15.0f;
@@ -38,3 +39,4 @@ namespace TEXTURES {
     const auto QUEEN = "assets/queen.png";
     const auto ROOK = "assets/rook.png";
 }
+

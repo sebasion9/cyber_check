@@ -75,6 +75,9 @@
     <ClCompile Include="TextRenderer.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="Audio.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pieces\PieceView.h">
@@ -123,6 +126,9 @@
       <Filter>Pliki nagłówkowe\state</Filter>
     </ClInclude>
     <ClInclude Include="TextRenderer.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>

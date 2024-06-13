@@ -6,6 +6,9 @@
 typedef std::pair<Player*, Player*> player_pair;
 class State {
 public:
+	static bool is_checked;
+	static bool check();
+	static void set_check(bool _check);
 	static std::vector<vec2u> under_attack_fields;
 	static std::vector<vec2u> get_under_attack();
 	static void set_under_attack(std::vector<vec2u> ua_fields);

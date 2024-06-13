@@ -5,7 +5,8 @@
 enum MoveType {
 	JUMPY = 1 << 0,
 	DIAGONAL = 1 << 1,
-	STRAIGHT = 1 << 2
+	STRAIGHT = 1 << 2,
+	PAWN = 1 << 3,
 };
 
 inline MoveType operator|(MoveType a, MoveType b)
@@ -31,7 +32,7 @@ public:
 
 	MoveType get_mtype();
 	void set_mtype(MoveType mtype);
-	bool is_in_legal_moves(vec2u board_index);
+	bool is_board_idx_in_vec2u(vec2u board_index, std::vector<vec2u> moves);
 	
 
 	virtual std::vector<vec2u> find_legal_moves() = 0;

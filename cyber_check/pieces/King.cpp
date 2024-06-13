@@ -16,12 +16,14 @@ std::vector<vec2u> King::find_legal_moves() {
 
 	return vec;
 }
-std::vector<vec2u> King::special_legal_moves(std::vector<vec2u> legal_moves, std::vector<std::pair<vec2u, Piece*>> pieces) {
+std::vector<vec2u> King::special_legal_moves(std::vector<vec2u> legal_moves, std::vector<Piece*> pieces) {
 	auto board_idx = get_board_index();
 	auto kingX = board_idx.x;
 	auto kingY = board_idx.y;
+	auto color = get_color();
 	auto ua_fields = State::get_under_attack();
 	bool turn = State::whosturn();
+	_checked = false;
 	for (auto& ua_field : ua_fields) {
 		for (auto& legal_move : legal_moves) {
 			if (ua_field.x == legal_move.x && ua_field.y == legal_move.y) {
@@ -31,15 +33,15 @@ std::vector<vec2u> King::special_legal_moves(std::vector<vec2u> legal_moves, std
 				}
 			}
 		}
-		if (ua_field.x == kingX && ua_field.y == kingY && get_color() == turn) {
-			std::cout << (get_color() ? "white " : "black ") << "king is checked!" << std::endl;
-		}
-		
+		_checked = _checked || (ua_field.x == kingX && ua_field.y == kingY && color == turn);
 	}
 	return legal_moves;
 }
 bool King::is_king() {
 	return true;
+}
+bool King::is_checked() {
+	return _checked;
 }
 
 int King::get_value() {

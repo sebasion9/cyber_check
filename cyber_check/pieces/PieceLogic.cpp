@@ -12,9 +12,9 @@ vec2u PieceLogic::_calculate_board_index(vec2f field_pos, const std::vector<vec2
 	return get_board_index();
 }
 
-bool PieceLogic::is_in_legal_moves(vec2u board_index) {
+bool PieceLogic::is_board_idx_in_vec2u(vec2u board_index, std::vector<vec2u> moves) {
 	bool res = false;
-	for (auto& move : _legal_moves) {
+	for (auto& move : moves) {
 		res = (move.x == board_index.x && move.y == board_index.y);
 		if (res) return res;
 	}

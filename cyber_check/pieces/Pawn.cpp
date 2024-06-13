@@ -4,10 +4,20 @@ std::vector<vec2u> Pawn::find_legal_moves() {
 	vec2u piece_pos = this->get_board_index();
 	int x = piece_pos.x;
 	int y = piece_pos.y;
+	bool color = get_color();
+	bool turn = State::whosturn();
 	std::vector<vec2u> vec;
 	
 	// WHITE PAWN
-	if (get_color()) {
+	if (color) {
+		if (color == !turn) {
+			if (y > 0) {
+				if (x > 0) vec.push_back(vec2u(x - 1, y - 1));
+				if (x < 7) vec.push_back(vec2u(x + 1, y - 1));
+				return vec;
+			}
+		}
+		
 		if (y == 6) {
 			vec.push_back(vec2u(x, 4));
 			vec.push_back(vec2u(x, 5));
@@ -19,6 +29,14 @@ std::vector<vec2u> Pawn::find_legal_moves() {
 		return vec;
 	}
 	// BLACK PAWN
+	if (color == !turn) {
+		if (y < 7) {
+			if (x > 0) vec.push_back(vec2u(x - 1, y + 1));
+			if (x < 7) vec.push_back(vec2u(x + 1, y + 1));
+			return vec;
+		}
+	}
+
 	if (y == 1) {
 		vec.push_back(vec2u(x, 2));
 		vec.push_back(vec2u(x, 3));
@@ -30,15 +48,20 @@ std::vector<vec2u> Pawn::find_legal_moves() {
 
 	return vec;
 }
-std::vector<vec2u> Pawn::special_legal_moves(std::vector<vec2u> legal_moves, std::vector<std::pair<vec2u, Piece*>> pieces) {
+std::vector<vec2u> Pawn::special_legal_moves(std::vector<vec2u> legal_moves, std::vector<Piece*> pieces) {
 	auto board_idx = get_board_index();
 	auto pawnX = board_idx.x;
 	auto pawnY = board_idx.y;
-	if (get_color()) {
+	bool color = get_color();
+	bool turn = State::whosturn();
+	if (color == !turn) {
+		return legal_moves;
+	}
+	if (color) {
 		for (auto& piece : pieces) {
-			auto pieceXY = piece.second->get_board_index();
+			auto pieceXY = piece->get_board_index();
 			if (pieceXY.y == pawnY - 1 && (pieceXY.x == pawnX - 1 || pieceXY.x == pawnX + 1)
-				&& piece.second->get_color() != get_color()) {
+				&& piece->get_color() != color) {
 				legal_moves.push_back(pieceXY);
 			}
 			if (pieceXY.y == pawnY - 1 && pieceXY.x == pawnX) {
@@ -51,9 +74,9 @@ std::vector<vec2u> Pawn::special_legal_moves(std::vector<vec2u> legal_moves, std
 		return legal_moves;
 	}
 	for (auto& piece : pieces) {
-		auto pieceXY = piece.second->get_board_index();
+		auto pieceXY = piece->get_board_index();
 		if (pieceXY.y == pawnY + 1 && (pieceXY.x == pawnX - 1 || pieceXY.x == pawnX + 1)
-			&& piece.second->get_color() != get_color()) {
+			&& piece->get_color() != color) {
 			legal_moves.push_back(pieceXY);
 		}
 		if (pieceXY.y == pawnY + 1 && pieceXY.x == pawnX) {
