@@ -70,6 +70,14 @@ std::vector<vec2u> Pawn::special_legal_moves(std::vector<vec2u> legal_moves, std
 					legal_moves.erase(found);
 				}
 			}
+			if (pawnY == 6) {
+				if (pieceXY.x == pawnX && pieceXY.y == pawnY - 1) {
+					auto found = std::find(legal_moves.begin(), legal_moves.end(), vec2u(pawnX, 4));
+					if (found != legal_moves.end()) {
+						legal_moves.erase(found);
+					}
+				}
+			}
 		}
 		return legal_moves;
 	}
@@ -83,6 +91,14 @@ std::vector<vec2u> Pawn::special_legal_moves(std::vector<vec2u> legal_moves, std
 			auto found = std::find(legal_moves.begin(), legal_moves.end(), pieceXY);
 			if (found != legal_moves.end()) {
 				legal_moves.erase(found);
+			}
+		}
+		if (pawnY == 1) {
+			if (pieceXY.x == pawnX && pieceXY.y == pawnY + 1) {
+				auto found = std::find(legal_moves.begin(), legal_moves.end(), vec2u(pawnX, 3));
+				if (found != legal_moves.end()) {
+					legal_moves.erase(found);
+				}
 			}
 		}
 	}

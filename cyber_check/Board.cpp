@@ -98,8 +98,8 @@ std::vector<std::vector<vec2u>> Board::sort_lm_by_selected_piece(const std::vect
             }
         }
         sorted_by_selpos_lm.push_back(lu);
-        sorted_by_selpos_lm.push_back(ld);
         sorted_by_selpos_lm.push_back(ru);
+        sorted_by_selpos_lm.push_back(ld);
         sorted_by_selpos_lm.push_back(rd);
 
     }
@@ -142,6 +142,9 @@ std::vector<vec2u> Board::correct_legal_moves(const std::vector<vec2u>& legal_mo
     bool ally = false;
     bool is_king = false;
     bool is_pieces_turn = State::whosturn();
+    if (selected_piece->get_mtype() & PAWN) {
+        return legal_moves;
+    }
     if (selected_piece->get_mtype() & JUMPY) {
     
         for (auto& moves : sorted_legal_moves_by_selected) {
@@ -227,56 +230,56 @@ std::vector<vec2u> Board::calc_saveable_fields() {
         int pieceX = piece->get_board_index().x;
         int pieceY = piece->get_board_index().y;
         MoveType mtype = piece->get_mtype();
-        if (mtype & MoveType::STRAIGHT || mtype &MoveType::DIAGONAL) {
-                auto sorted_moves = sort_lm_by_selected_piece(piece->get_legal_moves(), piece);
-                // bishop seems good, queen seems weird now, need to test rook and implement horse
-                if (mtype & MoveType::DIAGONAL) {
-                    std::reverse(sorted_moves[0].begin(), sorted_moves[0].end());
-                    std::reverse(sorted_moves[1].begin(), sorted_moves[1].end());
-                }
-                if (mtype & MoveType::STRAIGHT) {
-                    if (sorted_moves.size() == 8) {
-
-                        std::reverse(sorted_moves[4].begin(), sorted_moves[4].end());
-                        std::reverse(sorted_moves[6].begin(), sorted_moves[6].end());
-                    }
-                    else {
-                        std::reverse(sorted_moves[0].begin(), sorted_moves[0].end());
-                        std::reverse(sorted_moves[2].begin(), sorted_moves[2].end());
-                    }
-                }
-
-                
-                
-                for (auto& moves : sorted_moves) {
-                    if (next_piece) continue;
-                    for (auto& move : moves) {
-                        if (pieceX > kingX && move.x > pieceX) continue;
-                        if (pieceX < kingX && move.x < pieceX) continue;
-                        if (pieceY < kingY && move.y < pieceY) continue;
-                        if (pieceY > kingY && move.y > pieceY) continue;
-                        
-                        tmp_saveable.push_back(move);
-                        Piece* this_field_piece = get_piece_by_field(get_field_by_board_index(move));
-                        if (this_field_piece != nullptr && this_field_piece != king) {
-                            tmp_saveable.clear();
-                            continue;
-                        }
-                        if (this_field_piece == king) {
-                            tmp_saveable.pop_back();
-                            saveable_fields.insert(saveable_fields.end(), tmp_saveable.begin(), tmp_saveable.end());
-                            attacking_pieces.push_back(piece);
-                            next_piece = true;
-                            break;
-                        }
-
-                    }
-                }
-
-                if (next_piece) continue;
-            //}
+        if (piece->get_color() == turn) continue;
+        std::vector<std::vector<vec2u>> sorted_moves = { piece->get_legal_moves() };
+        if (!(mtype ^ (MoveType::STRAIGHT | MoveType::DIAGONAL))) {
+                sorted_moves = sort_lm_by_selected_piece(piece->get_legal_moves(), piece);
+                std::reverse(sorted_moves[0].begin(), sorted_moves[0].end());
+                std::reverse(sorted_moves[2].begin(), sorted_moves[2].end());
+                std::reverse(sorted_moves[4].begin(), sorted_moves[4].end());
+                std::reverse(sorted_moves[6].begin(), sorted_moves[6].end());
 
         }
+        else if (mtype & MoveType::DIAGONAL) {
+            sorted_moves = sort_lm_by_selected_piece(piece->get_legal_moves(), piece);
+            std::reverse(sorted_moves[0].begin(), sorted_moves[0].end());
+            std::reverse(sorted_moves[2].begin(), sorted_moves[2].end());
+        }
+        if (sorted_moves.empty()) continue;
+        for (auto& moves : sorted_moves) {
+            for (auto& move : moves) {
+                if (mtype & MoveType::JUMPY) {
+                    if (move.x == kingX && move.y == kingY) {
+                        next_piece = true;
+                        attacking_pieces.push_back(piece);
+                        break;
+                    }
+                }
+                if (pieceX > kingX && move.x > pieceX) continue;
+                if (pieceX < kingX && move.x < pieceX) continue;
+                if (pieceY < kingY && move.y < pieceY) continue;
+                if (pieceY > kingY && move.y > pieceY) continue;
+
+                tmp_saveable.push_back(move);
+                Piece* this_field_piece = get_piece_by_field(get_field_by_board_index(move));
+                if (this_field_piece != nullptr && this_field_piece != king) {
+                    tmp_saveable.clear();
+                    continue;
+                }
+                if (this_field_piece == king) {
+                    tmp_saveable.pop_back();
+                    saveable_fields.insert(saveable_fields.end(), tmp_saveable.begin(), tmp_saveable.end());
+                    attacking_pieces.push_back(piece);
+                    next_piece = true;
+                    break;
+                }
+
+            }
+            if (next_piece) break;
+            else tmp_saveable.clear();
+        }
+
+        if (next_piece) continue;
     }
     if (attacking_pieces.size() == 1) {
         saveable_fields.push_back(attacking_pieces[0]->get_board_index());

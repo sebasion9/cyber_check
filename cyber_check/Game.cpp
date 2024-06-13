@@ -264,11 +264,13 @@ void Game::run() {
 
         }
         State::set_under_attack({});
+        auto king = _board.get_king_by_color(turn);
         for (auto& piece : _board.pieces) {
+            if (piece->is_king()) continue;
             auto legal_moves = piece->find_legal_moves();
             auto corrected_legal_moves = _board.correct_legal_moves(legal_moves, piece);
             auto special_legal_moves = piece->special_legal_moves(corrected_legal_moves, _board.pieces);
-            if (_board.get_king_by_color(turn)->is_checked() && !piece->is_king() && piece->get_color() == turn) {
+            if (king->is_checked() && !piece->is_king() && piece->get_color() == turn) {
                 auto intersect = _board.intersect(special_legal_moves, saveable);
                 piece->set_legal_moves(intersect);
             }
@@ -278,41 +280,18 @@ void Game::run() {
             if (piece->get_color() != turn) {
                 State::append_ua_fields(piece->get_legal_moves());
             }
+
         }
-        for (auto& piece : _board.pieces) {
-            if (piece->is_king()) {
-                auto legal_moves = piece->find_legal_moves();
-                auto corrected_legal_moves = _board.correct_legal_moves(legal_moves, piece);
-                auto special_legal_moves = piece->special_legal_moves(corrected_legal_moves, _board.pieces);
-                piece->set_legal_moves(special_legal_moves);
-                if (piece->is_checked() && turn == piece->get_color() && old_turn != turn) {
-                    Audio::push_event(AudioEvent::Check);
-                    // saving logic
-                    // ONLY legal moves, for every piece now, are (piece.legal_moves & SAVEABLE_MOVES)
-                    // soo iterate over pieces again and change its legal moves to ^
-                    // but kings moves are not changed
-                    // include in saveable: 
-                    // 1. fields that are between attacking piece and king
-                    // 2. fields that the attacking piece stands on
-                    // create the saveable fields in board class
-                    // use the enum MoveType to determine the "ray" of attack and append the fields
-                    // WINS the !State::turn(), checkmate flag is turned on when:
-                    // 1. king.legal_fields().size() < 1
-                    // 2. saveable.size() < 1
-                    // 3. king.is_checked()
-                    // in summary
-                    //
-                    // 1. write calc_saveable_fields on board class, containing fields that are on "ray" of attack
-                    // and the fields the delivering check piece stands (but if there are more than 2 pieces
-                    // delivering check, then dont append them to saveable as its impossible to hit any of them then)
-                    // 2. determine the checkmate when the 3 conditions are met
-                    // 3. return the winning player, that is the opposite of current turn
-                    
-                    
-                    saveable = _board.calc_saveable_fields();
-                }
-            }
+        auto legal_moves = king->find_legal_moves();
+        auto corrected_legal_moves = _board.correct_legal_moves(legal_moves, king);
+        auto special_legal_moves = king->special_legal_moves(corrected_legal_moves, _board.pieces);
+        king->set_legal_moves(special_legal_moves);
+        if (king->is_checked() && old_turn != turn) {
+            Audio::push_event(AudioEvent::Check);
+            saveable = _board.calc_saveable_fields();
         }
+
+       
 
         _should_draw_legal_moves = false;
         vec2f selected_field = _board.get_selected();
@@ -376,7 +355,6 @@ void Game::render() {
     for (auto &piece : _board.pieces) {
         piece->draw(*_window);
     }
-    // make sure piece that is being hold, is always over all other pieces
     Piece* selected_piece = _board.get_piece_by_field(_board.get_selected());
     if (selected_piece) {
         selected_piece->draw(*_window);

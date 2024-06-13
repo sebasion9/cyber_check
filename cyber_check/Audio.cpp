@@ -21,28 +21,25 @@ int Audio::play() {
 	if (!main_theme.openFromFile("assets/main_theme.mp3")) {
 		return -1;
 	}
-	main_theme.setVolume(5.0f);
+	main_theme.setVolume(1.0f);
 	hit.setBuffer(hit_buffer);
 	hit.setVolume(30.0f);
 	place.setBuffer(place_buffer);
 	place.setVolume(30.0f);
 	check.setBuffer(check_buffer);
 	check.setVolume(30.0f);
-	std::thread event_t;;
+	//std::thread event_t;;
 	while (true) {
 		if (event_poll()) {
 			switch (audio_event) {
 				case AudioEvent::Check:
-					event_t = std::thread(&sf::Sound::play, &check);
-					event_t.join();
+					check.play();
 					break;
 				case AudioEvent::Place:
-					event_t = std::thread(&sf::Sound::play, &place);
-					event_t.join();
+					place.play();
 					break;
 				case AudioEvent::Hit:
-					event_t = std::thread(&sf::Sound::play, &hit);
-					event_t.join();
+					hit.play();
 					break;
 				case AudioEvent::End:
 					break;
