@@ -284,6 +284,14 @@ std::vector<vec2u> Board::calc_saveable_fields() {
     if (attacking_pieces.size() == 1) {
         saveable_fields.push_back(attacking_pieces[0]->get_board_index());
     }
+    else if (attacking_pieces.size() > 1) {
+        for (auto& attacking : attacking_pieces) {
+            auto found = std::find(saveable_fields.begin(),saveable_fields.end(), attacking->get_board_index());
+            if (found != saveable_fields.end()) {
+                saveable_fields.erase(found);
+            }
+        }
+    }
     return saveable_fields;
 
 }
@@ -307,10 +315,6 @@ void Board::update() {
                             break;
                         }
                     }
-                }
-                if (State::check()) {
-                    Audio::push_event(AudioEvent::Check);
-                    continue;
                 }
                 hit ? Audio::push_event(AudioEvent::Hit) : Audio::push_event(AudioEvent::Place);
             }

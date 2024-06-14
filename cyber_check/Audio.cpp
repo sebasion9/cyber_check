@@ -2,6 +2,7 @@
 std::queue<AudioEvent> Audio::_events;
 
 int Audio::play() {
+	bool terminate = false;
 	sf::Music main_theme;
 	sf::SoundBuffer hit_buffer;
 	sf::SoundBuffer place_buffer;
@@ -28,7 +29,6 @@ int Audio::play() {
 	place.setVolume(30.0f);
 	check.setBuffer(check_buffer);
 	check.setVolume(30.0f);
-	//std::thread event_t;;
 	while (true) {
 		if (event_poll()) {
 			switch (audio_event) {
@@ -43,12 +43,18 @@ int Audio::play() {
 					break;
 				case AudioEvent::End:
 					break;
+				case AudioEvent::Terminate:
+					terminate = true;
+					break;
 				default:
 					break;
 			}
 		}
 		if (main_theme.getStatus() != sf::Music::Playing) {
 			main_theme.play();
+		}
+		if (terminate) {
+			return 0;
 		}
 	}
 	

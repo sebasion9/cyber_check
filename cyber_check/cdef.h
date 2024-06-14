@@ -28,6 +28,7 @@ enum class PieceType {
 namespace SPACING {
     const auto MARGIN = 10.0f;
     const auto BOARD_OFFSET = 15.0f;
+    const auto MENU_MARGIN = 30.0f;
 }
 
 

@@ -7,7 +7,8 @@ enum class AudioEvent {
 	Check,
 	End,
 	Hit,
-	Place
+	Place,
+	Terminate,
 };
 
 class Audio {
@@ -17,4 +18,6 @@ public:
 	int play();
 	bool event_poll();
 	static void push_event(AudioEvent event);
+
+	
 };

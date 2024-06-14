@@ -3,14 +3,6 @@ int State::score = 0;
 bool State::_turn = 1;
 player_pair State::_players = std::make_pair<Player*, Player*>(new Player(0, "Czarne"), new Player(1, "Biale"));
 std::vector<vec2u> State::under_attack_fields = {};
-bool State::is_checked = false;
-bool State::check() {
-	return is_checked;
-}
-void State::set_check(bool _check) {
-	is_checked = _check;
-}
-
 
 std::vector<vec2u> State::get_under_attack() {
 	return under_attack_fields;

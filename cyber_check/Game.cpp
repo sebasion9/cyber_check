@@ -1,17 +1,18 @@
 #include"Game.h"
-Game::Game(sf::VideoMode vm, const sf::String& title, std::string font_path) {
-
-    _window = new sf::RenderWindow(vm, title, sf::Style::Resize | sf::Style::Fullscreen);
+Game::Game(sf::RenderWindow* win, std::string font_path) {
+    _view = View::Menu;
+    _window = win;
     _board = Board(*_window);
     _should_draw_legal_moves = false;
     _renderer = TextRenderer(_board.fields[0], _board.field_size * 8, font_path);
+    _menu_view = MenuView(win, font_path);
 }
 Game::~Game() {
     delete _window;
 }
 
 bool Game::mouse_in_board_bounds() {
-    sf::Vector2i mouse_pos = sf::Mouse::getPosition();
+    sf::Vector2i mouse_pos = sf::Mouse::getPosition(*_window);
     if (_board.fields.size() < 64) {
         return false;
     }
@@ -200,26 +201,25 @@ void Game::reset() {
         piece->set_legal_moves(corrected_legal_moves);
     }
 }
-
-void Game::run() {
-    load_textures();
-    if (!_window) return;
+void Game::match() {
+    reset();
     sf::Clock clock;
     bool is_holding = false;
     bool is_smth_selected = false;
     bool check_legal_moves = false;
     bool was_king_checked = false;
     bool old_turn = State::whosturn();
+    bool turn = State::whosturn();
+
     std::vector<vec2u> saveable = {};
     bool checkmate = false;
-    reset();
-    
     int frame_count = 0;
     float frame_time = 0;
+    sf::Event event;
+    bool game_running = true;
 
-    while (_window->isOpen()) {
-        sf::Event event;
-        bool turn = State::whosturn();
+    while (game_running) {
+        turn = State::whosturn();
         while (_window->pollEvent(event)) {
             switch (event.type) {
 
@@ -236,10 +236,10 @@ void Game::run() {
                 if (mouse_in_board_bounds()) {
                     is_holding = true;
                     if (!is_smth_selected) {
-                        
+
                         bool player_color = turn;
                         auto hovered_piece = _board.get_piece_by_field(_board.get_hovered());
-                        
+
                         if (hovered_piece && hovered_piece->get_color() == player_color) {
                             _board.set_selected(hovered_piece->get_field_pos());
                             is_smth_selected = true;
@@ -248,7 +248,7 @@ void Game::run() {
                             _board.set_selected(vec2f(-1.0, -1.0));
                             is_smth_selected = false;
                         }
-                        
+
                     }
                 }
                 break;
@@ -291,30 +291,38 @@ void Game::run() {
             saveable = _board.calc_saveable_fields();
         }
 
-       
+
 
         _should_draw_legal_moves = false;
         vec2f selected_field = _board.get_selected();
         Piece* selected_piece = _board.get_piece_by_field(selected_field);
         if (is_holding) {
             if (selected_piece) {
-                
-                sf::Vector2i mouse_pos = sf::Mouse::getPosition();
+
+                sf::Vector2i mouse_pos = sf::Mouse::getPosition(*_window);
                 float mouse_x = (float)mouse_pos.x;
                 float mouse_y = (float)mouse_pos.y;
                 selected_piece->set_act_pos_mouse(mouse_x, mouse_y);
 
                 _should_draw_legal_moves = true;
                 std::vector<vec2f> legal_fields;
-                for (auto &legal_move : selected_piece->get_legal_moves()) {
+                for (auto& legal_move : selected_piece->get_legal_moves()) {
                     legal_fields.push_back(_board.get_field_by_board_index(legal_move));
                 }
 
                 _board.set_current_legal_fields(legal_fields);
             }
         }
+        checkmate = true;
+        for (auto& piece : _board.pieces) {
+            if (piece->get_color() == turn) {
+                if (piece->get_legal_moves().size() > 0) {
+                    checkmate = false;
+                }
+            }
+        }
         if (checkmate) {
-            std::cout << "checkmate";
+            _view = View::Menu;
             break;
         }
         old_turn = turn;
@@ -327,15 +335,43 @@ void Game::run() {
             _fps = frame_count / frame_time;
             frame_count = 0;
             frame_time = 0.0f;
-
-     
         }
-
         update();
         render();
-
-
     }
+    
+    
+
+}
+void Game::run() {
+    int close = 0;
+    if (!_window) return;
+    
+    load_textures();
+
+    while (_window->isOpen()) {
+        switch (_view) {
+        case View::Match:
+            match();
+            break;
+        case View::Menu:
+            close = _menu_view.loop();
+            break;
+        default:
+            //menu
+            break;
+        }
+
+        if (close) {
+            break;
+        }
+        else {
+            _view = View::Match;
+        }
+        
+    }
+    
+
 }
 
 void Game::update() {
@@ -346,7 +382,7 @@ void Game::update() {
 
 
 void Game::render() {
-    _window->clear(sf::Color::Black);
+    _window->clear(MenuColors::BACKGROUND);
     _board.draw(*_window);
     _renderer.draw(*_window);
     if (_should_draw_legal_moves) {
