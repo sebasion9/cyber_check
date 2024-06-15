@@ -218,8 +218,13 @@ void Game::match() {
     sf::Event event;
     bool game_running = true;
 
+    auto players = State::get_player();
+    std::thread white_t(&Player::decrement_time, players.first);
+    std::thread black_t(&Player::decrement_time, players.second);
+
     while (game_running) {
         turn = State::whosturn();
+        Player::turn = turn;
         while (_window->pollEvent(event)) {
             switch (event.type) {
 
@@ -340,8 +345,9 @@ void Game::match() {
         render();
     }
     
+    white_t.join();
+    black_t.join();
     
-
 }
 void Game::run() {
     int close = 0;

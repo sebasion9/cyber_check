@@ -277,50 +277,103 @@ int MenuView::play_menu() {
 
 	init_text("play", play_btn);
 
-	_texts[PlayText::name1]->setFillColor(MenuColors::PRIMARY);
-	_texts[PlayText::name2]->setFillColor(MenuColors::PRIMARY);
 
 	int selected_time = -1;
+	int selected_input = -1;
+	bool is_typing = false;
+	std::string name1 = "";
+	std::string name2 = "";
+	sf::Text* name1_text = _texts[PlayText::name1];
+	sf::Text* name2_text = _texts[PlayText::name2];
+
+	name1_text->setFillColor(MenuColors::PRIMARY);
+	name2_text->setFillColor(MenuColors::PRIMARY);
 
 	sf::Event event;
+	bool res1 = false;
+	bool res2 = false;
 	for (;;) {
 		while (_window->pollEvent(event)) {
 			if (event.type == sf::Event::MouseButtonPressed) {
 				if (sel_idx == PlayBtn::back) {
+					is_typing = false;
 					clear_mem();
 					return 1;
 				}
-				if (sel_idx == PlayBtn::label1 || sel_idx == PlayBtn::label2) {
-					// enter typing state
-					// toggle typing flag
-					// (on enter event) validate w/ regex, toggle flag
-					// save the names to state
-					break;
+				if (sel_idx == PlayBtn::input1 || sel_idx == PlayBtn::input2) {
+					selected_input = sel_idx;
+					is_typing = true;
+					continue;
 				}
 				if (sel_idx >= PlayBtn::t1 && sel_idx <= PlayBtn::t3) {
+					is_typing = false;
 					selected_time = sel_idx;
-					break;
+					continue;
 				}
 				if (sel_idx == PlayBtn::play) {
-					// cant start without both names, and selected time
-					clear_mem();
-					return 0;
+					is_typing = false;
+					if (res1 && res2 && selected_time != -1) {
+						clear_mem();
+						int time = 600000;
+						auto players = State::get_player();
+						if (selected_time == PlayBtn::t1) time = 180000;
+						if (selected_time == PlayBtn::t2) time = 300000;
+						players.first->set_name(name1);
+						players.second->set_name(name2);
+						players.first->set_time(time);
+						players.second->set_time(time);
+						return 0;
+					}
+					
+				}
+			}
+			if (event.type == sf::Event::TextEntered) {
+				char ch = (char)event.text.unicode;
+				if (is_typing && (
+					(ch <= 'Z' && ch >= 'A')
+					||
+					(ch <= 'z' && ch >= 'A')
+					||
+					ch == '_'
+					)) {
+					if (selected_input == PlayBtn::input1) {
+						name1 += ch;
+						continue;
+					}
+					if (selected_input == PlayBtn::input2) {
+						name2 += ch;
+						continue;
+					}
+				}
+			}
+			if (event.type == sf::Event::KeyPressed) {
+				if (event.key.code == sf::Keyboard::Backspace && is_typing) {
+					if (selected_input == PlayBtn::input1 && !name1.empty()) {
+						name1.pop_back();
+						continue;
+					}
+					if (selected_input == PlayBtn::input2 && !name2.empty()) {
+						name2.pop_back();
+						continue;
+					}
 				}
 			}
 		}
+		// validation
+		auto username_expr = std::regex("^[a-zA-Z](\\w){1,9}$");
+		res1= std::regex_match(name1, username_expr);
+		res2= std::regex_match(name2, username_expr);
+		!res1 ? name1_text->setFillColor(MenuColors::TEXT_NOK) : name1_text->setFillColor(MenuColors::TEXT_OK);
+		!res2 ? name2_text->setFillColor(MenuColors::TEXT_NOK) : name2_text->setFillColor(MenuColors::TEXT_OK);
+
+		!name1.empty() ? name1_text->setString(name1) : name1_text->setString("white...");
+		!name2.empty() ? name2_text->setString(name2) : name2_text->setString("black...");
 		clear_btns();
 		color_hover();
 		color_select(selected_time);
 		update();
 		draw();
 	}
-
-
-	// if play
-	return 0;
-
-	// if back
-	return 1;
 }
 void MenuView::opts() {
 
@@ -335,6 +388,7 @@ void MenuView::update() {
 	int mouseY = mouse_pos.y;
 	sf::RectangleShape* rect_but;
 	sf::FloatRect rect_bounds;
+
 	for (size_t i = 1; i < _drawables.size(); i++) {
 		rect_but = (sf::RectangleShape*)_drawables[i];
 		rect_bounds = rect_but->getGlobalBounds();

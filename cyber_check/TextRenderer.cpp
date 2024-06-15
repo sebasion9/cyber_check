@@ -18,20 +18,23 @@ void TextRenderer::update_texts(float fps) {
     _fps_text.setString("fps " + std::to_string((int)fps));
     _fps_text.setFont(_font);
     int state_score = State::get_score();
+    player_pair players = State::get_player();
     int score_flag = state_score < 0 && state_score != 0;
     _player1.name.setFont(_font);
+    _player1.name.setString(players.first->get_name());
     _player1.score.setFont(_font);
     _player1.score.setString(score_flag ? "+" + std::to_string(abs(state_score)) : "");
     // DBG
     _player1.time.setFont(_font);
-    _player1.time.setString("3:00");
+    _player1.time.setString(players.first->get_time_str());
 
     _player2.name.setFont(_font);
+    _player2.name.setString(players.second->get_name());
     _player2.score.setFont(_font);
     _player2.score.setString(score_flag ? "" : "+" + std::to_string(abs(state_score)));
     // DBG
     _player2.time.setFont(_font);
-    _player2.time.setString("3:00");
+    _player2.time.setString(players.second->get_time_str());
 
     _whos_turn_text.setString(State::whosturn() ? "white turn" : "black turn");
     _whos_turn_text.setFillColor(State::whosturn() ? WHITE : BLACK);

@@ -1,7 +1,9 @@
 #pragma once
 #include<SFML/Graphics.hpp>;
-#include"cdef.h"
 #include<iostream>
+#include<regex>
+#include"cdef.h"
+#include"state/State.h"
 #include"AssetLoader.h"
 namespace MenuColors {
     const sf::Color BACKGROUND = sf::Color(6,8,28);
@@ -9,6 +11,8 @@ namespace MenuColors {
     const sf::Color SECONDARY = sf::Color(2, 131, 145);
     const sf::Color TEXT_PRIMARY = sf::Color(200, 191, 184);
     const sf::Color TEXT_SECONDARY = sf::Color(238,238,238);
+    const sf::Color TEXT_OK = sf::Color(141, 236, 180);
+    const sf::Color TEXT_NOK = sf::Color(238, 78, 78);
     const sf::Color HOVER = sf::Color(
         PRIMARY.r * 0.65,
         PRIMARY.r * 0.65,
@@ -37,7 +41,9 @@ namespace PlayBtn {
     const int back = 4;
     const int second_box = 5;
     const int label1 = 6;
+    const int input1 = 7;
     const int label2 = 8;
+    const int input2 = 9;
     const int play = 10;
 }
 namespace PlayText {

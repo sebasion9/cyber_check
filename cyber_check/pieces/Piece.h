@@ -20,5 +20,4 @@ public:
 		vec2u board_index
 	);
 
-	~Piece();
 };

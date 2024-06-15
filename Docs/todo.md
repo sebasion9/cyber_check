@@ -21,39 +21,22 @@
 0. ehhhh
 	- filesystem
 	- ranges
-	- regex
-	- thread(done)
 1. general
 	- handle checkmate and ending the game
 	- leaderboard
 2. games
-	- add time counters
 	- add forfeit/draw button
 	- add endscreen after the game
+	- add win/lose/draw handling/time=0 handling
 3. menus
 - menu structure:
 	- options
 		+music slider
 		+sounds slider
 		- back
-	- start the game
-		- select time
-			+3:00
-			+5:00
-			+10:00
-		- players name
-			+input1
-			+input2
-		- play
-		- back
 	- leaderboard
 		+leaderboard display
 		- back
-- menu todo:
-	1. play
-		- inputs, validation for names
-		- send time, player names to the game
-
 4. audio
 - on checkmate/draw
 
