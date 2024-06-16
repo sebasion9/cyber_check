@@ -2,9 +2,11 @@
 #include<SFML/Graphics.hpp>;
 #include<iostream>
 #include<regex>
+#include<string>
 #include"cdef.h"
 #include"state/State.h"
 #include"AssetLoader.h"
+#include"Audio.h"
 namespace MenuColors {
     const sf::Color BACKGROUND = sf::Color(6,8,28);
     const sf::Color PRIMARY = sf::Color(34, 40, 49);
@@ -50,6 +52,15 @@ namespace PlayText {
     const int name1 = 5;
     const int name2 = 7;
 }
+namespace OptsBtn {
+    const int music_p = 1;
+    const int music_n = 2;
+    const int effects_p = 3;
+    const int effects_n = 4;
+    const int progr_bar = 8;
+    const int back = 9;
+}
+
 
 
 class MenuView {
@@ -66,6 +77,7 @@ public:
     void clear_mem();
     void color_hover();
     void color_select(int selected);
+    void click_sound();
     void clear_btns();
     void menu_box();
 

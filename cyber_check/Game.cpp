@@ -28,7 +28,10 @@ void Game::load_textures() {
 }
 
 void Game::reset() {
-
+    if (!_board.pieces.empty()) {
+        _board.pieces.clear();
+    }
+    State::reset();
     for (size_t i = 0 ; i < 8; i++) {
         _board.pieces.push_back(
             new Pawn(
@@ -219,6 +222,7 @@ void Game::match() {
     bool game_running = true;
 
     auto players = State::get_player();
+    Player::end = false;
     std::thread white_t(&Player::decrement_time, players.first);
     std::thread black_t(&Player::decrement_time, players.second);
 
@@ -328,7 +332,8 @@ void Game::match() {
         }
         if (checkmate) {
             _view = View::Menu;
-            break;
+            game_running = false;
+            Player::end = true;
         }
         old_turn = turn;
         float delta_time = clock.restart().asSeconds();
@@ -356,25 +361,18 @@ void Game::run() {
     load_textures();
 
     while (_window->isOpen()) {
-        switch (_view) {
-        case View::Match:
+        if (_view == View::Match) {
             match();
-            break;
-        case View::Menu:
-            close = _menu_view.loop();
-            break;
-        default:
-            //menu
-            break;
+            _view = View::Menu;
+            continue;
         }
-
+        if (_view == View::Menu) {
+            close = _menu_view.loop();
+            if(!close) _view = View::Match;
+        }
         if (close) {
             break;
         }
-        else {
-            _view = View::Match;
-        }
-        
     }
     
 

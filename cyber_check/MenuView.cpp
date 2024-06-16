@@ -8,6 +8,7 @@ MenuView::MenuView(sf::RenderWindow* win, const std::string &font_path) {
 		std::cerr << "couldnt load font, exiting now";
 		exit(1);
 	}
+	sel_idx = -1;
 	_window = win;
 }
 void MenuView::init_text(const std::string& txt_str, sf::FloatRect rect) {
@@ -124,6 +125,7 @@ int MenuView::loop() {
 		while(_window->pollEvent(event)) {
 			switch (event.type) {
 			case sf::Event::MouseButtonPressed:
+				click_sound();
 				if (sel_idx == 1) {
 					if (!play_menu()) {
 						return 0;
@@ -133,11 +135,12 @@ int MenuView::loop() {
 				}
 				if (sel_idx == 2) {
 					opts();
+					main_menu();
 					break;
 				}
 				if (sel_idx == 3) {
 					leaderboard();
-					std::cout << "leaderboard";
+					main_menu();
 					break;
 				}
 				if (sel_idx == 4) {
@@ -167,11 +170,10 @@ int MenuView::loop() {
 			frame_count = 0;
 			frame_time = 0.0f;
 		}
-		clear_btns();
-		color_hover();
 		draw();
 		update();
 	}
+	return 0;
 }
 void MenuView::color_hover() {
 	if (sel_idx != -1) {
@@ -184,6 +186,9 @@ void MenuView::color_select(int selected) {
 		sf::RectangleShape* button = (sf::RectangleShape*)_drawables[selected];
 		button->setFillColor(MenuColors::SELECT);
 	}
+}
+void MenuView::click_sound() {
+	Audio::push_event(AudioEvent::Click);
 }
 void MenuView::clear_btns() {
 	sf::RectangleShape* rect_but;
@@ -274,7 +279,6 @@ int MenuView::play_menu() {
 	init_text("white...", input1);
 	init_text("player 2", label2);
 	init_text("black...", input2);
-
 	init_text("play", play_btn);
 
 
@@ -295,6 +299,7 @@ int MenuView::play_menu() {
 	for (;;) {
 		while (_window->pollEvent(event)) {
 			if (event.type == sf::Event::MouseButtonPressed) {
+				click_sound();
 				if (sel_idx == PlayBtn::back) {
 					is_typing = false;
 					clear_mem();
@@ -368,18 +373,85 @@ int MenuView::play_menu() {
 
 		!name1.empty() ? name1_text->setString(name1) : name1_text->setString("white...");
 		!name2.empty() ? name2_text->setString(name2) : name2_text->setString("black...");
-		clear_btns();
-		color_hover();
-		color_select(selected_time);
+
 		update();
 		draw();
+		color_select(selected_time);
 	}
 }
 void MenuView::opts() {
+	clear_mem();
+	menu_box();
+	sel_idx = -1;
+	auto win_size = _window->getSize();
+	auto w = win_size.x / 4.0f;
+	auto h = win_size.y * 4.0f / 5.0f;
+	auto x = 1.5 * w;
+	auto y = win_size.y / 6.0f;
+	sf::RectangleShape* box = new sf::RectangleShape(vec2f(w, h / 2));
+	auto gt_rect = box->getLocalBounds();
+	box->setFillColor(MenuColors::PRIMARY);
+	box->setPosition(vec2f(x, y));
+
+
+	auto music_p = init_rect(0, box->getGlobalBounds());
+	auto music_n = init_rect(1, box->getGlobalBounds());
+	auto effects_p = init_rect(2, box->getGlobalBounds());
+	auto effects_n = init_rect(3, box->getGlobalBounds());
+	init_rect(6, box->getGlobalBounds());
+	init_rect(6, box->getGlobalBounds());
+	init_rect(6, box->getGlobalBounds());
+	auto volume = init_rect(6, box->getGlobalBounds());
+	auto back = init_rect(7, box->getGlobalBounds());
+	init_text("music+", music_p);
+	init_text("music-", music_n);
+	init_text("effects+", effects_p);
+	init_text("effects-", effects_n);
+	init_text("+++++++++", volume);
+	init_text("back", back);
+	bool is_music = false;
+	auto vol_text = _texts[4];
+	std::string vol_level = "+++++";
+	sf::Event event;
+	for (;;) {
+		while (_window->pollEvent(event)) {
+			if (event.type == sf::Event::MouseButtonPressed) {
+				click_sound();
+				if (sel_idx == OptsBtn::music_p && Audio::music_volume < 100) {
+					is_music = true;
+					Audio::music_volume += 10;
+					continue;
+				}
+				if (sel_idx == OptsBtn::music_n && Audio::music_volume > 0) {
+					is_music = true;
+					Audio::music_volume -= 10;
+					continue;
+				}
+				if (sel_idx == OptsBtn::effects_p && Audio::effects_volume < 100) {
+					is_music = false;
+					Audio::effects_volume += 10;
+					continue;
+				}
+				if (sel_idx == OptsBtn::effects_n && Audio::effects_volume > 0) {
+					is_music = false;
+					Audio::effects_volume -= 10;
+					continue;
+				}
+				if (sel_idx == OptsBtn::back) {
+					clear_mem();
+					return;
+				}
+			}
+		}
+		is_music ? vol_level = std::string(Audio::music_volume / 10, '+') : vol_level = std::string(Audio::effects_volume / 10, '+');
+		vol_text->setString(vol_level);
+		update();
+		draw();
+	}
 
 }
 void MenuView::leaderboard() {
-
+	clear_mem();
 }
 
 void MenuView::update() {
@@ -388,7 +460,6 @@ void MenuView::update() {
 	int mouseY = mouse_pos.y;
 	sf::RectangleShape* rect_but;
 	sf::FloatRect rect_bounds;
-
 	for (size_t i = 1; i < _drawables.size(); i++) {
 		rect_but = (sf::RectangleShape*)_drawables[i];
 		rect_bounds = rect_but->getGlobalBounds();
@@ -413,5 +484,7 @@ void MenuView::draw() {
 	for (auto& text : _texts) {
 		_window->draw(*text);
 	}
+	clear_btns();
+	color_hover();
 	_window->display();
 }

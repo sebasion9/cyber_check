@@ -11,6 +11,7 @@ public:
 	static std::mutex time_mtx;
 	static std::condition_variable cv;
 	static bool turn;
+	static bool end;
 	bool get_color();
 	void set_color(bool color);
 

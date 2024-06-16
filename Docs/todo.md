@@ -30,10 +30,6 @@
 	- add win/lose/draw handling/time=0 handling
 3. menus
 - menu structure:
-	- options
-		+music slider
-		+sounds slider
-		- back
 	- leaderboard
 		+leaderboard display
 		- back

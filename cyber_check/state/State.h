@@ -19,4 +19,5 @@ public:
 	static Player* get_player(bool id);
 	static void turn();
 	static bool whosturn();
+	static void reset();
 };

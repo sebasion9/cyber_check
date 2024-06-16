@@ -40,3 +40,8 @@ void State::set_score(int _score) {
 	score = _score;
 }
 
+void State::reset() {
+	score = 0;
+	_turn = 1;
+	under_attack_fields = {};
+}

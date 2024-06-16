@@ -2,6 +2,7 @@
 std::mutex Player::time_mtx;
 std::condition_variable Player::cv;
 bool Player::turn;
+bool Player::end;
 
 bool Player::get_color() {
 	return _color; 
@@ -37,6 +38,7 @@ using namespace std::chrono_literals;
 void Player::decrement_time() {
 	bool color = _color;
 	for (;;) {
+		if (end) break;
 		std::unique_lock<std::mutex> time_lock(time_mtx);
 		cv.wait(time_lock, [color] {return color == turn;  });
 		std::this_thread::sleep_for(1000ms);

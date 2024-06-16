@@ -1,15 +1,18 @@
 #include"Audio.h"
 std::queue<AudioEvent> Audio::_events;
-
+int Audio::effects_volume = 50;
+int Audio::music_volume = 50;
 int Audio::play() {
 	bool terminate = false;
 	sf::Music main_theme;
 	sf::SoundBuffer hit_buffer;
 	sf::SoundBuffer place_buffer;
 	sf::SoundBuffer check_buffer;
+	sf::SoundBuffer click_buffer;
 	sf::Sound hit;
 	sf::Sound place;
 	sf::Sound check;
+	sf::Sound click;
 	if (!hit_buffer.loadFromFile("assets/hit.mp3")) {
 		return -1;
 	}
@@ -19,16 +22,21 @@ int Audio::play() {
 	if (!check_buffer.loadFromFile("assets/check.wav")) {
 		return -1;
 	}
+	if (!click_buffer.loadFromFile("assets/click.wav")) {
+		return -1;
+	}
 	if (!main_theme.openFromFile("assets/main_theme.mp3")) {
 		return -1;
 	}
-	main_theme.setVolume(1.0f);
+	main_theme.setVolume(music_volume);
 	hit.setBuffer(hit_buffer);
-	hit.setVolume(30.0f);
+	hit.setVolume(effects_volume);
 	place.setBuffer(place_buffer);
-	place.setVolume(30.0f);
+	place.setVolume(effects_volume);
 	check.setBuffer(check_buffer);
-	check.setVolume(30.0f);
+	check.setVolume(effects_volume);
+	click.setBuffer(click_buffer);
+	click.setVolume(effects_volume);
 	while (true) {
 		if (event_poll()) {
 			switch (audio_event) {
@@ -41,6 +49,8 @@ int Audio::play() {
 				case AudioEvent::Hit:
 					hit.play();
 					break;
+				case AudioEvent::Click:
+					click.play();
 				case AudioEvent::End:
 					break;
 				case AudioEvent::Terminate:
@@ -56,6 +66,11 @@ int Audio::play() {
 		if (terminate) {
 			return 0;
 		}
+		main_theme.setVolume(music_volume);
+		hit.setVolume(effects_volume);
+		place.setVolume(effects_volume);
+		check.setVolume(effects_volume);
+		click.setVolume(effects_volume);
 	}
 	
 
