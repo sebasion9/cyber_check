@@ -213,7 +213,8 @@ void Game::match() {
     bool was_king_checked = false;
     bool old_turn = State::whosturn();
     bool turn = State::whosturn();
-
+    
+    
     std::vector<vec2u> saveable = {};
     bool checkmate = false;
     int frame_count = 0;
@@ -226,9 +227,19 @@ void Game::match() {
     std::thread white_t(&Player::decrement_time, players.first);
     std::thread black_t(&Player::decrement_time, players.second);
 
+
+    bool white_ff = false;
+    bool white_f = false;
+    bool black_ff = false;
+    bool black_f = false;
+    bool white_draw = false;
+    bool black_draw = false;
+    bool drew = false;
+
     while (game_running) {
         turn = State::whosturn();
         Player::turn = turn;
+        auto curr_player = State::get_player(turn);
         while (_window->pollEvent(event)) {
             switch (event.type) {
 
@@ -267,11 +278,40 @@ void Game::match() {
                     is_smth_selected = false;
                 }
                 break;
+            case sf::Event::KeyPressed:
+                if (event.key.code == sf::Keyboard::C) {
+                    // white draw
+                    white_draw = true;
+                }
+                if (event.key.code == sf::Keyboard::V) {
+                    // white forfeit
+                    if (white_f) white_ff = true;
+                    white_f = true;
+                }
+                if (event.key.code == sf::Keyboard::D) {
+                    // black draw
+                    black_draw = true;
+                }
+                if (event.key.code == sf::Keyboard::F) {
+                    // black forfeit
+                    if (black_f) black_ff = true;
+                    black_f = true;
+                }
+                if (event.key.code == sf::Keyboard::Escape) {
+                    black_f = false;
+                    white_f = false;
+                }
+                break;
             default:
                 break;
             }
 
         }
+        white_f ? _renderer._forfeit2.setFillColor(sf::Color::Red) : _renderer._forfeit2.setFillColor(WHITE);
+        black_f ? _renderer._forfeit1.setFillColor(sf::Color::Red) : _renderer._forfeit1.setFillColor(WHITE);
+        white_draw ? _renderer._draw2.setFillColor(sf::Color::Yellow) : _renderer._draw2.setFillColor(WHITE);
+        black_draw ? _renderer._draw1.setFillColor(sf::Color::Yellow) : _renderer._draw1.setFillColor(WHITE);
+
         State::set_under_attack({});
         auto king = _board.get_king_by_color(turn);
         for (auto& piece : _board.pieces) {
@@ -299,8 +339,6 @@ void Game::match() {
             Audio::push_event(AudioEvent::Check);
             saveable = _board.calc_saveable_fields();
         }
-
-
 
         _should_draw_legal_moves = false;
         vec2f selected_field = _board.get_selected();
@@ -330,11 +368,40 @@ void Game::match() {
                 }
             }
         }
+        if (curr_player->get_time() == 0) {
+            _view = View::Menu;
+            game_running = false;
+            Player::end = true;
+            State::turn();
+        }
         if (checkmate) {
             _view = View::Menu;
             game_running = false;
             Player::end = true;
         }
+        if (white_draw && black_draw) {
+            drew = true;
+            _view = View::Menu;
+            game_running = false;
+            Player::end = true;
+        }
+        if (turn && (white_ff || black_ff)) {
+            _view = View::Menu;
+            game_running = false;
+            Player::end = true;
+            if (black_ff) {
+                State::turn();
+            }
+        }
+        else if(!turn && (white_ff || black_ff)) {
+            _view = View::Menu;
+            game_running = false;
+            Player::end = true;
+            if (white_ff) {
+                State::turn();
+            }
+        }
+
         old_turn = turn;
         float delta_time = clock.restart().asSeconds();
 
@@ -348,27 +415,42 @@ void Game::match() {
         }
         update();
         render();
+
+
+
     }
-    
-    white_t.join();
-    black_t.join();
+    if (drew) {
+        State::_draw = true;
+    }
+    _renderer._forfeit2.setFillColor(WHITE);
+    _renderer._forfeit1.setFillColor(WHITE);
+    _renderer._draw2.setFillColor(WHITE);
+    _renderer._draw1.setFillColor(WHITE);
+    white_t.detach();
+    black_t.detach();
     
 }
 void Game::run() {
     int close = 0;
+    bool play_again = false;
     if (!_window) return;
     
     load_textures();
 
     while (_window->isOpen()) {
-        if (_view == View::Match) {
+        switch (_view) {
+        case View::Match:
             match();
-            _view = View::Menu;
-            continue;
-        }
-        if (_view == View::Menu) {
+            _view = View::Endgame;
+            break;
+        case View::Menu:
             close = _menu_view.loop();
-            if(!close) _view = View::Match;
+            if (!close) _view = View::Match;
+            break;
+        case View::Endgame:
+            play_again = _menu_view.endgame();
+            play_again ? _view = View::Match : _view = View::Menu;
+            break;
         }
         if (close) {
             break;

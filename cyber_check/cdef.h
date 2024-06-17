@@ -1,5 +1,6 @@
 #pragma once
 #include<SFML/Graphics.hpp>
+#include<filesystem>
 
 
 enum class PieceType {
@@ -24,6 +25,9 @@ enum class PieceType {
 
 #define BLACK_PIECE sf::Color(0, 30, 100)
 
+#define fs std::filesystem
+
+const std::string LEADERBOARD_PATH = "ldb";
 
 namespace SPACING {
     const auto MARGIN = 10.0f;

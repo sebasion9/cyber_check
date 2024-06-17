@@ -15,8 +15,13 @@ class TextRenderer {
 	vec2f _board_pos;
 	int _board_size;
 public:
+	sf::Text _draw1;
+	sf::Text _forfeit1;
+	sf::Text _draw2;
+	sf::Text _forfeit2;
 	void draw(sf::RenderWindow &window);
 	void update_texts(float fps);
 	TextRenderer();
 	TextRenderer(vec2f board_pos, int board_size, std::string font_path);
+
 };

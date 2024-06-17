@@ -15,6 +15,7 @@ public:
 	static void set_score(int _score);
 	static player_pair _players;
 	static bool _turn;
+	static bool _draw;
 	static player_pair get_player();
 	static Player* get_player(bool id);
 	static void turn();

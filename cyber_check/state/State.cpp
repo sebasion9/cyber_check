@@ -1,6 +1,7 @@
 #include"State.h"
 int State::score = 0;
 bool State::_turn = 1;
+bool State::_draw = false;
 player_pair State::_players = std::make_pair<Player*, Player*>(new Player(0, "Black"), new Player(1, "White"));
 std::vector<vec2u> State::under_attack_fields = {};
 
@@ -44,4 +45,5 @@ void State::reset() {
 	score = 0;
 	_turn = 1;
 	under_attack_fields = {};
+	_draw = false;
 }

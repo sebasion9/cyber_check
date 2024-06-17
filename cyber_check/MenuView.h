@@ -2,7 +2,10 @@
 #include<SFML/Graphics.hpp>;
 #include<iostream>
 #include<regex>
+#include<ranges>
 #include<string>
+#include<filesystem>
+#include<fstream>
 #include"cdef.h"
 #include"state/State.h"
 #include"AssetLoader.h"
@@ -60,14 +63,25 @@ namespace OptsBtn {
     const int progr_bar = 8;
     const int back = 9;
 }
+namespace EndgameBtn {
+    const int play_again = 1;
+    const int leaderboard = 2;
+    const int menu = 3;
+}
 
-
+struct ldb_entry {
+    std::string name;
+    int wins;
+    int loses;
+    int draws;
+};
 
 class MenuView {
     sf::RenderWindow* _window;
     std::vector<sf::Drawable*> _drawables;
     std::vector<sf::Text*> _texts;
     std::vector<sf::Sprite*> _pieces;
+    std::vector<ldb_entry> _ldb;
 public:
     int sel_idx;
     sf::Font font;
@@ -91,6 +105,12 @@ public:
     sf::FloatRect init_rect(int idx, sf::FloatRect dest);
     void init_pieces();
     int loop();
+    bool endgame();
     void update();
     void draw();
+
+
+
+    std::vector<ldb_entry> update_ldb(const std::string &pname, int stat);
+    std::vector<ldb_entry> open_ldb();
 };

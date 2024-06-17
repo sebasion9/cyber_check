@@ -1,4 +1,6 @@
 #include"MenuView.h"
+#include <filesystem>
+#include <filesystem>
 
 MenuView::MenuView() {
 }
@@ -107,13 +109,89 @@ void MenuView::init_pieces() {
 	_pieces.push_back(pawn_spr);
 }
 
+bool MenuView::endgame() {
+	clear_mem();
+	menu_box();
+	auto win_size = _window->getSize();
+	auto w = win_size.x / 4.0f;
+	auto h = win_size.y * 4.0f / 5.0f;
+	auto x = 1.5 * w;
+	auto y = win_size.y / 6.0f;
+
+	auto play_again = init_rect(0);
+	auto ldb = init_rect(1);
+	auto main_menu = init_rect(2);
+	init_text("play again", play_again);
+	init_text("leaderboard", ldb);
+	init_text("main menu", main_menu);
+
+
+	std::string res_string;
+	auto winner = State::get_player(State::whosturn());
+	
+	State::_draw ? res_string = "DRAW" : res_string = winner->get_name() + " WON";
+	auto title_color = MenuColors::TEXT_PRIMARY;
+	sf::Text* result = new sf::Text;
+	result->setFont(font);
+	result->setFillColor(MenuColors::TEXT_PRIMARY);
+	result->setString(res_string);
+	result->setScale(1.5f, 1.5f);
+	sf::FloatRect gt_rect = result->getLocalBounds();
+	result->setOrigin(gt_rect.left + gt_rect.width / 2.0f,
+		gt_rect.top + gt_rect.height / 2.0f);
+	result->setPosition(vec2f(x + w / 2.0f, y + h / 10.0f));
+	_texts.push_back(result);
+
+	auto players = State::get_player();
+	if (State::_draw) {
+		update_ldb(players.first->get_name(), 2);
+		_ldb = update_ldb(players.second->get_name(), 2);
+	}
+	else {
+		if (State::whosturn()) {
+			update_ldb(players.first->get_name(), 0);
+			_ldb = update_ldb(players.second->get_name(), 1);
+		}
+		else {
+			update_ldb(players.first->get_name(), 1);
+			_ldb = update_ldb(players.second->get_name(), 0);
+		}
+	}
+	sf::Event event;
+	for (;;) {
+		while (_window->pollEvent(event)) {
+			if (event.type == sf::Event::MouseButtonPressed) {
+				click_sound();
+				if (sel_idx == EndgameBtn::play_again) {
+					clear_mem();
+					if (!play_menu()) {
+						return 1;
+					}
+					continue;
+				}
+				if (sel_idx == EndgameBtn::leaderboard) {
+					clear_mem();
+					leaderboard();
+					return 0;
+				}
+				if (sel_idx == EndgameBtn::menu) {
+					clear_mem();
+					return 0;
+				}
+			}
+		}
+
+		update();
+		draw();
+	}
+}
 
 int MenuView::loop() {
 	sf::Clock clock;
 	int frame_count = 0;
 	float frame_time = 0;
 	sel_idx = -1;
-
+	_ldb = open_ldb();
 	main_menu();
 	bool gradient_down = false;
 	auto title_color = MenuColors::TEXT_PRIMARY;
@@ -176,13 +254,13 @@ int MenuView::loop() {
 	return 0;
 }
 void MenuView::color_hover() {
-	if (sel_idx != -1) {
+	if (sel_idx != -1 && sel_idx < _drawables.size()) {
 		sf::RectangleShape* button = (sf::RectangleShape*)_drawables[sel_idx];
 		button->setFillColor(MenuColors::HOVER);
 	}
 }
 void MenuView::color_select(int selected) {
-	if (selected != -1) {
+	if (selected != -1 && selected < _drawables.size()) {
 		sf::RectangleShape* button = (sf::RectangleShape*)_drawables[selected];
 		button->setFillColor(MenuColors::SELECT);
 	}
@@ -323,8 +401,8 @@ int MenuView::play_menu() {
 						auto players = State::get_player();
 						if (selected_time == PlayBtn::t1) time = 180000;
 						if (selected_time == PlayBtn::t2) time = 300000;
-						players.first->set_name(name1);
-						players.second->set_name(name2);
+						players.first->set_name(name2);
+						players.second->set_name(name1);
 						players.first->set_time(time);
 						players.second->set_time(time);
 						return 0;
@@ -364,7 +442,6 @@ int MenuView::play_menu() {
 				}
 			}
 		}
-		// validation
 		auto username_expr = std::regex("^[a-zA-Z](\\w){1,9}$");
 		res1= std::regex_match(name1, username_expr);
 		res2= std::regex_match(name2, username_expr);
@@ -452,6 +529,37 @@ void MenuView::opts() {
 }
 void MenuView::leaderboard() {
 	clear_mem();
+	menu_box();
+	auto box = (sf::RectangleShape*)_drawables[0];
+	auto hidden_box = box->getGlobalBounds();
+	hidden_box.top -= box->getGlobalBounds().top;
+
+	std::string entry;
+	entry += "name w/l/d";
+	init_text(entry, hidden_box);
+	for (size_t i = 0; i < 10; i++) {
+		if (i < _ldb.size()) {
+			hidden_box.top += _texts[0]->getCharacterSize();
+			entry = _ldb[i].name + " " + std::to_string(_ldb[i].wins) + "/" + std::to_string(_ldb[i].loses) + "/" + std::to_string(_ldb[i].draws);
+			init_text(entry, hidden_box);
+		}
+	}
+	auto back = init_rect(3);
+	init_text("back", back);
+	sf::Event event;
+	for (;;) {
+		while (_window->pollEvent(event)) {
+			if (event.type == sf::Event::MouseButtonPressed) {
+				click_sound();
+				if (sel_idx == 1) {
+					clear_mem();
+					return;
+				}
+			}
+		}
+		update();
+		draw();
+	}
 }
 
 void MenuView::update() {
@@ -473,18 +581,141 @@ void MenuView::update() {
 	sel_idx = -1;
 }
 
+//void MenuView::draw() {
+//	_window->clear(MenuColors::BACKGROUND);
+//	for (auto& piece : _pieces) {
+//		_window->draw(*piece);
+//	}
+//	for (auto& drawable : _drawables) {
+//		_window->draw(*drawable);
+//	}
+//	for (auto& text : _texts) {
+//		_window->draw(*text);
+//	}
+//	clear_btns();
+//	color_hover();
+//	_window->display();
+//}
 void MenuView::draw() {
 	_window->clear(MenuColors::BACKGROUND);
-	for (auto& piece : _pieces) {
-		_window->draw(*piece);
-	}
-	for (auto& drawable : _drawables) {
-		_window->draw(*drawable);
-	}
-	for (auto& text : _texts) {
-		_window->draw(*text);
-	}
+
+	auto draw_item = [this](auto& item) {
+		_window->draw(*item);
+	};
+
+	std::ranges::for_each(_pieces, draw_item);
+	std::ranges::for_each(_drawables, draw_item);
+	std::ranges::for_each(_texts, draw_item);
+
 	clear_btns();
 	color_hover();
 	_window->display();
+}
+
+std::vector<ldb_entry> MenuView::update_ldb(const std::string& pname, int stat) {
+	std::vector<ldb_entry> res;
+
+	auto path = fs::path(fs::current_path() / LEADERBOARD_PATH);
+	if (!fs::exists(path)) {
+		fs::create_directories(path.parent_path());
+		std::ofstream ofs(path);
+		if (stat == 0) {
+			ofs << pname << " 1 0 0\n";
+		}
+		else if (stat == 1) {
+			ofs << pname << " 0 1 0\n";
+		}
+		else {
+			ofs << pname << " 0 0 1\n";
+		}
+		ofs.close();
+		res.push_back({ pname, stat == 0 ? 1 : 0, stat == 1 ? 1 : 0, stat == 2 ? 1 : 0 });
+	}
+	else {
+		std::ifstream ifs(path);
+		std::vector<ldb_entry> leaderboard;
+		std::string line;
+		bool player_found = false;
+
+		while (std::getline(ifs, line)) {
+			std::istringstream iss(line);
+			std::string name;
+			int wins, loses, draws;
+
+			if (!(iss >> name >> wins >> loses >> draws)) {
+				std::cerr << "error parsing line: " << line << std::endl;
+				continue;
+			}
+
+			if (name == pname) {
+				player_found = true;
+				if (stat == 0) {
+					wins++;
+				}
+				else if (stat == 1) {
+					loses++;
+				}
+				else {
+					draws++;
+				}
+			}
+
+			leaderboard.push_back({ name, wins, loses, draws });
+		}
+		ifs.close();
+
+		if (!player_found) {
+			if (stat == 0) {
+				leaderboard.push_back({ pname, 1, 0, 0 });
+			}
+			else if (stat == 1) {
+				leaderboard.push_back({ pname, 0, 1, 0 });
+			}
+			else {
+				leaderboard.push_back({ pname, 0, 0, 1 });
+			}
+		}
+		std::ofstream ofs(path);
+		auto push_entry = [&res, &ofs](ldb_entry &entry) {
+			ofs << entry.name << " " << entry.wins << " " << entry.loses << " " << entry.draws << "\n";
+			res.push_back(entry);
+		};
+		std::ranges::for_each(leaderboard, push_entry);
+		ofs.close();
+	}
+
+	return res;
+}
+
+
+std::vector<ldb_entry> MenuView::open_ldb() {
+	std::vector<ldb_entry> leaderboard;
+
+	auto path = fs::path(fs::current_path() / LEADERBOARD_PATH);
+	if (!fs::exists(path)) {
+		fs::create_directories(path.parent_path());
+		std::ofstream ofs(path);
+		return leaderboard;
+	}
+	else {
+		std::ifstream ifs(path);
+		std::vector<ldb_entry> leaderboard;
+		std::string line;
+		bool player_found = false;
+
+		while (std::getline(ifs, line)) {
+			std::istringstream iss(line);
+			std::string name;
+			int wins, loses, draws;
+
+			if (!(iss >> name >> wins >> loses >> draws)) {
+				std::cerr << "error parsing line: " << line << std::endl;
+				continue;
+			}
+
+			leaderboard.push_back({ name, wins, loses, draws });
+		}
+		ifs.close();
+		return leaderboard;
+	}
 }

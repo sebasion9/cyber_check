@@ -16,7 +16,8 @@
 #include<mutex>
 enum class View {
     Menu,
-    Match
+    Match,
+    Endgame
 };
 
 class Game {

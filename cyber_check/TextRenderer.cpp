@@ -12,6 +12,11 @@ void TextRenderer::draw(sf::RenderWindow& window) {
     window.draw(_player2.name);
     window.draw(_player2.score);
     window.draw(_player2.time);
+
+    window.draw(_draw1);
+    window.draw(_forfeit1);
+    window.draw(_draw2);
+    window.draw(_forfeit2);
 }
 
 void TextRenderer::update_texts(float fps) {
@@ -47,6 +52,10 @@ void TextRenderer::update_texts(float fps) {
         whosturnY
     ));
     _whos_turn_text.setFont(_font);
+    _draw1.setFont(_font);
+    _forfeit1.setFont(_font);
+    _draw2.setFont(_font);
+    _forfeit2.setFont(_font);
 }
 TextRenderer::TextRenderer() {
 	_board_pos = vec2f(0,0);
@@ -153,4 +162,43 @@ TextRenderer::TextRenderer(vec2f board_pos, int board_size, std::string font_pat
         _board_pos.y - SPACING::BOARD_OFFSET + (double)_board_size / 2.0
     ));
     _whos_turn_text = whos_turn;
+
+    sf::Text draw1;
+    sf::Text forfeit1;
+    sf::Text draw2;
+    sf::Text forfeit2;
+    draw1.setString("press D to send/accept draw request");
+    forfeit1.setString("press F twice to forfeit, ESC to cancel");
+
+    draw1.setFillColor(WHITE);
+    forfeit1.setFillColor(WHITE);
+    draw1.setPosition(vec2f(
+        _board_pos.x,
+        _board_pos.y - 5 * SPACING::BOARD_OFFSET
+    ));
+    forfeit1.setPosition(vec2f(
+        _board_pos.x,
+        _board_pos.y - 3 * SPACING::BOARD_OFFSET
+    ));
+
+    _draw1 = draw1;
+    _forfeit1 = forfeit1;
+
+
+    draw2.setString("press C to send/accept draw request");
+    forfeit2.setString("press V twice to forfeit, ESC to cancel");
+
+    draw2.setFillColor(WHITE);
+    forfeit2.setFillColor(WHITE);
+    draw2.setPosition(vec2f(
+        _board_pos.x,
+        _board_pos.y + _board_size
+    ));
+    forfeit2.setPosition(vec2f(
+        _board_pos.x,
+        _board_pos.y + _board_size + 2 * SPACING::BOARD_OFFSET
+    ));
+
+    _draw2 = draw2;
+    _forfeit2 = forfeit2;
 }
