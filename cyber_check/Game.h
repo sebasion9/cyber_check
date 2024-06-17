@@ -14,6 +14,7 @@
 #include"MenuView.h"
 #include"cdef.h"
 #include<mutex>
+#include<ranges>
 enum class View {
     Menu,
     Match,

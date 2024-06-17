@@ -11,6 +11,7 @@ public:
 	static void set_under_attack(std::vector<vec2u> ua_fields);
 	static void append_ua_fields(std::vector<vec2u> ua_fields);
 	static int score;
+	static int _castle;
 	static int get_score();
 	static void set_score(int _score);
 	static player_pair _players;

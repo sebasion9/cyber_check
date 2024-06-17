@@ -51,7 +51,6 @@ int Audio::play() {
 					break;
 				case AudioEvent::Click:
 					click.play();
-				case AudioEvent::End:
 					break;
 				case AudioEvent::Terminate:
 					terminate = true;

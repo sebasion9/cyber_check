@@ -5,7 +5,6 @@
 #include<SFML/Audio.hpp>
 enum class AudioEvent {
 	Check,
-	End,
 	Hit,
 	Place,
 	Click,

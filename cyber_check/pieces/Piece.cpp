@@ -13,6 +13,18 @@ int Piece::update(uint32_t field_size, const std::vector<vec2f>& fields) {
 		set_field_pos(field.x, field.y);
 		set_act_pos(actual_pos);
 		if (old_board_index.x != board_index.x || old_board_index.y != board_index.y) {
+			if (_castleable) {
+				_castleable = !_castleable;
+				int diff = board_index.x - old_board_index.x;
+				if (is_king()) {
+					if (diff > 1) {
+						State::_castle = 1;
+					}
+					else if (diff < -1) {
+						State::_castle = 2;
+					}
+				}
+			}
 			State::turn();
 			return 1;
 		}
@@ -28,7 +40,7 @@ std::vector<vec2u> Piece::find_legal_moves() {
 	std::vector<vec2u> vec;
 	return vec;
 }
-std::vector<vec2u> Piece::special_legal_moves(std::vector<vec2u> legal_moves, std::vector<Piece*> pieces) {
+std::vector<vec2u> Piece::special_legal_moves(std::vector<vec2u> legal_moves, std::vector<Piece*> pieces, std::vector<vec2f> fields) {
 	return legal_moves;
 }
 bool Piece::is_king() {
@@ -36,6 +48,9 @@ bool Piece::is_king() {
 }
 bool Piece::is_checked() {
 	return false;
+}
+bool Piece::castleable() {
+	return _castleable;
 }
 
 Piece::Piece(
@@ -54,6 +69,20 @@ Piece::Piece(
 	color == WHITE_PIECE ? set_color(1) : set_color(0);
 	set_legal_moves(find_legal_moves());
 	set_mtype(mtype);
+	_castleable = false;
 };
 
 
+Piece* Piece::get_piece_by_field(std::vector<Piece*> pieces, vec2f field) {
+	for(auto const& piece : pieces) {
+		vec2f piece_pos = piece->get_field_pos();
+		if (field.x == piece_pos.x && field.y == piece_pos.y) {
+			return piece;
+		}
+	}
+	return nullptr;
+}
+vec2f Piece::get_field_by_board_index(vec2u board_index, std::vector<vec2f> fields) {
+	uint32_t index = board_index.x + board_index.y * 8;
+	return fields[index];
+}

@@ -4,6 +4,7 @@ bool State::_turn = 1;
 bool State::_draw = false;
 player_pair State::_players = std::make_pair<Player*, Player*>(new Player(0, "Black"), new Player(1, "White"));
 std::vector<vec2u> State::under_attack_fields = {};
+int State::_castle = 0;
 
 std::vector<vec2u> State::get_under_attack() {
 	return under_attack_fields;

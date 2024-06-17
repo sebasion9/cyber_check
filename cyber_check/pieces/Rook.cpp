@@ -13,6 +13,7 @@ std::vector<vec2u> Rook::find_legal_moves() {
 	return vec;
 }
 
+
 int Rook::get_value() {
 	return 5;
 }

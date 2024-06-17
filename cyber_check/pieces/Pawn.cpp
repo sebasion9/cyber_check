@@ -48,7 +48,7 @@ std::vector<vec2u> Pawn::find_legal_moves() {
 
 	return vec;
 }
-std::vector<vec2u> Pawn::special_legal_moves(std::vector<vec2u> legal_moves, std::vector<Piece*> pieces) {
+std::vector<vec2u> Pawn::special_legal_moves(std::vector<vec2u> legal_moves, std::vector<Piece*> pieces, std::vector<vec2f> fields) {
 	auto board_idx = get_board_index();
 	auto pawnX = board_idx.x;
 	auto pawnY = board_idx.y;

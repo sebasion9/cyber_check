@@ -581,21 +581,6 @@ void MenuView::update() {
 	sel_idx = -1;
 }
 
-//void MenuView::draw() {
-//	_window->clear(MenuColors::BACKGROUND);
-//	for (auto& piece : _pieces) {
-//		_window->draw(*piece);
-//	}
-//	for (auto& drawable : _drawables) {
-//		_window->draw(*drawable);
-//	}
-//	for (auto& text : _texts) {
-//		_window->draw(*text);
-//	}
-//	clear_btns();
-//	color_hover();
-//	_window->display();
-//}
 void MenuView::draw() {
 	_window->clear(MenuColors::BACKGROUND);
 

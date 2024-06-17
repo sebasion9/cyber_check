@@ -199,6 +199,9 @@ void Game::reset() {
             vec2u(5, 7)
         ));
     for (auto& piece : _board.pieces) {
+        if (piece->get_mtype() == MoveType::STRAIGHT || piece->is_king()) {
+            piece->_castleable = true;
+        }
         auto legal_moves = piece->find_legal_moves();
         auto corrected_legal_moves = _board.correct_legal_moves(legal_moves, piece);
         piece->set_legal_moves(corrected_legal_moves);
@@ -318,7 +321,7 @@ void Game::match() {
             if (piece->is_king()) continue;
             auto legal_moves = piece->find_legal_moves();
             auto corrected_legal_moves = _board.correct_legal_moves(legal_moves, piece);
-            auto special_legal_moves = piece->special_legal_moves(corrected_legal_moves, _board.pieces);
+            auto special_legal_moves = piece->special_legal_moves(corrected_legal_moves, _board.pieces, _board.fields);
             if (king->is_checked() && !piece->is_king() && piece->get_color() == turn) {
                 auto intersect = _board.intersect(special_legal_moves, saveable);
                 piece->set_legal_moves(intersect);
@@ -333,7 +336,7 @@ void Game::match() {
         }
         auto legal_moves = king->find_legal_moves();
         auto corrected_legal_moves = _board.correct_legal_moves(legal_moves, king);
-        auto special_legal_moves = king->special_legal_moves(corrected_legal_moves, _board.pieces);
+        auto special_legal_moves = king->special_legal_moves(corrected_legal_moves, _board.pieces, _board.fields);
         king->set_legal_moves(special_legal_moves);
         if (king->is_checked() && old_turn != turn) {
             Audio::push_event(AudioEvent::Check);
@@ -353,13 +356,14 @@ void Game::match() {
 
                 _should_draw_legal_moves = true;
                 std::vector<vec2f> legal_fields;
-                for (auto& legal_move : selected_piece->get_legal_moves()) {
-                    legal_fields.push_back(_board.get_field_by_board_index(legal_move));
-                }
-
+                auto push_lf = [&legal_fields, this](auto &item) {
+                    legal_fields.push_back(_board.get_field_by_board_index(item));
+                };
+                std::ranges::for_each(selected_piece->get_legal_moves(), push_lf);
                 _board.set_current_legal_fields(legal_fields);
             }
         }
+
         checkmate = true;
         for (auto& piece : _board.pieces) {
             if (piece->get_color() == turn) {
@@ -416,6 +420,34 @@ void Game::match() {
         update();
         render();
 
+        if (State::_castle == 1) {
+            auto kingX = king->get_board_index().x;
+            auto kingY = king->get_board_index().y;
+            auto rook = _board.get_piece_by_field(_board.get_field_by_board_index(vec2u(7, kingY)));
+            if (rook) {
+                rook->set_board_index(vec2u(5, kingY));
+                auto fieldX = _board.get_field_by_board_index(vec2u(5, kingY)).x;
+                auto fieldY = _board.get_field_by_board_index(vec2u(5, kingY)).y;
+                rook->set_field_pos(fieldX, fieldY);
+                rook->_castleable = false;
+                rook->update(_board.field_size, _board.fields);
+            }
+            State::_castle = 0;
+        }
+        if (State::_castle == 2) {
+            auto kingX = king->get_board_index().x;
+            auto kingY = king->get_board_index().y;
+            auto rook = _board.get_piece_by_field(_board.get_field_by_board_index(vec2u(0, kingY)));
+            if (rook) {
+                rook->set_board_index(vec2u(3, kingY));
+                auto fieldX = _board.get_field_by_board_index(vec2u(3, kingY)).x;
+                auto fieldY = _board.get_field_by_board_index(vec2u(3, kingY)).y;
+                rook->set_field_pos(fieldX, fieldY);
+                rook->_castleable = false;
+                rook->update(_board.field_size, _board.fields);
+            }
+            State::_castle = 0;
+        }
 
 
     }
